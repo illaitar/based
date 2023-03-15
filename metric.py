@@ -151,3 +151,37 @@ def haff_calc(im1, im2):
             cv2.line(image2, (line[0], line[1]), (line[2], line[3]), (0, 255, 0), thickness=5)
 
     return np.linalg.norm(image1 - image2)
+
+
+def sobel_sd(img):
+    """
+    Second derivative of image gradients
+    """
+
+    grad_x = cv2.Sobel(img, ddepth=cv2.CV_32F, dx=2, dy=0, ksize=13)
+    grad_y = cv2.Sobel(img, ddepth=cv2.CV_32F, dx=0, dy=2, ksize=13)
+
+    grad = np.sqrt(np.square(grad_x) + np.square(grad_y))
+    cv2.normalize(grad, grad, 0, 255, cv2.NORM_MINMAX)
+
+    return grad
+
+
+def reblur(img):
+    reblur = cv2.GaussianBlur(img,(9,9),0)
+
+    edges1 = sobel_sd(img)
+    edges2 = sobel_sd(reblur)
+
+    return np.linalg.norm(edges1 - edges2)
+
+
+def reblur_calc(im1, im2):
+    """
+    Calculates reblur image to blur image
+    """
+
+    reblur_1 = reblur(im1)
+    reblur_2 = reblur(im2)
+
+    return np.abs(reblur_1 - reblur_2)
