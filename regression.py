@@ -20,7 +20,7 @@ from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_c
 def stack(im1, im2):
     return sobel_calc(im1, im2) * hog_calc(im1, im2)
 
-comps = [sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, gabor_calc]
+comps = [sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, gabor_calc, reblur_calc]
 
 
 eval_dataset = "based"

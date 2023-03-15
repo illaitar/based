@@ -168,7 +168,7 @@ def sobel_sd(img):
 
 
 def reblur(img):
-    reblur = cv2.GaussianBlur(img,(9,9),0)
+    reblur = cv2.GaussianBlur(img,(7,7),0)
 
     edges1 = sobel_sd(img)
     edges2 = sobel_sd(reblur)
