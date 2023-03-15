@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, gabore_compare, ssim_calc
 from regression import regression
 
 
@@ -73,6 +73,7 @@ if __name__ == "__main__":
         methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
         methods = [method.replace(".png", "") for method in methods]
 
+
         print("\t\t\tDataset:", eval_dataset)
         print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
         for component in [
@@ -81,6 +82,7 @@ if __name__ == "__main__":
             hog_calc,
             lbp_calc,
             gabor_calc,
+            ssim_calc,
             regression
         ]:
             tic = time.time()

@@ -1,10 +1,13 @@
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import RANSACRegressor
+from sklearn.tree import DecisionTreeRegressor
 import pickle
 import os
 from tqdm import tqdm
@@ -12,9 +15,15 @@ import cv2
 import numpy as np
 
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc
 
-eval_dataset = "rsblur"
+def stack(im1, im2):
+    return sobel_calc(im1, im2) * hog_calc(im1, im2)
+
+comps = [sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, gabor_calc]
+
+
+eval_dataset = "based"
 
 blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
 subjective_table = f"{eval_dataset}.csv"
@@ -22,7 +31,6 @@ subjective_table = f"{eval_dataset}.csv"
 videos = sorted(os.listdir(f"crops_{eval_dataset}"))
 methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
 methods = [method.replace(".png", "") for method in methods]
-
 
 def prepare_dataset(components, save_path="./"):
     base_path = f"./crops_{eval_dataset}"
@@ -49,19 +57,31 @@ def train(data_csv, components, save_path = "./"):
     data = pd.read_csv(os.path.join(save_path, data_csv))
     labels = [i for i in data.columns if i not in components and i != 'result']
     data.drop(columns = labels,  axis=1, inplace=True)
-    model = LinearRegression(fit_intercept=False)
-    # model = RandomForestRegressor(n_estimators = 150, random_state = 0)
+    #model = LinearRegression(fit_intercept=False)
+    model = RandomForestRegressor(n_estimators = 150, random_state = 0, criterion='squared_error')
+    # model = Pipeline([('poly', PolynomialFeatures(degree=2)),
+    #                   ('linear', LinearRegression(fit_intercept=False))])
+    # model = RANSACRegressor(LinearRegression(),
+		# max_trials=4, 		# Number of Iterations
+		# min_samples=2, 		# Minimum size of the sample
+		# loss='absolute_loss', 	# Metrics for loss
+		# residual_threshold=10 	# Threshold
+		# )
+    # model = DecisionTreeRegressor(max_depth = 10)
+
     X = data.iloc[:, 0:-1].values
     y = data.iloc[:, -1].values
-    scaler = MinMaxScaler()
+    scaler = StandardScaler()
     X = scaler.fit_transform(X)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.02, random_state=42)
     model.fit(X_train, y_train)
-    for elem in zip(components, model.coef_):
+    for elem in zip(components, model.feature_importances_):
         print(f"{elem[0]}:{elem[1]}")
     preds_valid = model.predict(X_test)
     score_valid = mean_absolute_error(y_test, preds_valid)
-    print("MAE: ",score_valid)
+    print("MAE: ", score_valid)
+    score_valid = mean_squared_error(y_test, preds_valid)
+    print("MSE: ", score_valid)
     with open(os.path.join(save_path, ('scaler.pkl')), 'wb') as fid:
         pickle.dump(scaler, fid)
     with open(os.path.join(save_path, ('model.pkl')), 'wb') as fid:
@@ -74,20 +94,15 @@ def regression(blur, deblur, path="./"):
     with open(os.path.join(path, 'model.pkl'), 'rb') as fid:
         model = pickle.load(fid)
         values = {}
-    # values['gabore'] = gabor_calc(deblur, blur)
-    #values['sobel'] = sobel_calc(deblur, blur)
-    #values['hog'] = hog_calc(deblur, blur)
-    values['stack'] = stack(deblur, blur)
-    values['lbp'] = lbp_calc(deblur, blur)
-    #values['haff'] = haff_calc(deblur, blur)
+    for comp in comps:
+        values[comp.__name__] = comp(deblur, blur)
     values = list(values.values())
     values = np.array(values).reshape(1, -1)
     values = scaler.transform(values)
     return model.predict(values)
 
-def stack(im1, im2):
-    return sobel_calc(im1, im2) * hog_calc(im1, im2)
+
 
 if __name__ == "__main__":
-    prepare_dataset([stack, gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc])
-    train(f'dataset_{eval_dataset}.csv', [stack, haff_calc])
+    prepare_dataset(comps)
+    train(f'dataset_{eval_dataset}.csv', comps)

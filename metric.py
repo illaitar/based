@@ -1,6 +1,43 @@
 import cv2
 import numpy as np
 import skimage
+from skimage.metrics import structural_similarity as ssim
+from scipy import ndimage as ndi
+from skimage.filters import gabor_kernel
+
+def ssim_calc(im1, im2):
+    return ssim(im1, im2, channel_axis=2)
+
+kernels = []
+for theta in range(3):
+    theta = theta / 3. * np.pi
+    for sigma in (1, 3, 6):
+        for frequency in (0.05, 0.10, 0.15):
+            kernel = np.real(gabor_kernel(frequency, theta=theta,
+                                            sigma_x=sigma, sigma_y=sigma))
+            kernels.append(kernel)
+
+
+def compute_feats(image):
+    global kernels
+    feats = np.zeros((len(kernels), 2), dtype=np.double)
+    for k, kernel in enumerate(kernels):
+        filtered = ndi.convolve(image, kernel, mode='wrap')
+        # feats[k, 0] = filtered.mean()
+        feats[k, 1] = filtered.var()
+    return feats
+
+def gabore_compare(im1, im2):
+    global kernels, prev_hash, cache
+
+    im1 = cv2.resize(im1, (256, 256))
+    im2 = cv2.resize(im2, (256, 256))
+
+    a1 = compute_feats(cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128)))
+    a2 = compute_feats(cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128)))
+
+    part2 = np.sum(np.abs(a1[:,1] - a2[:,1]))
+    return part2
 
 
 def gabor(image):
@@ -21,7 +58,7 @@ def gabor_calc(im1, im2):
     gabor_1 = gabor(cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128)))
     gabor_2 = gabor(cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128)))
 
-    return np.linalg.norm(gabor_1 - gabor_2)
+    return -np.linalg.norm(gabor_1 - gabor_2)
 
 
 def sobel(image):
@@ -41,6 +78,7 @@ def sobel_calc(im1, im2):
     * Grayscale conversion descreases quality (-0.02)
     * Histogram of edges descreases quality (-0.04)
     * x4 Downsample decreases quality (-0.05)
+    * SSIM instead of norm decreases quality (-0.12)
     """
 
     edge_1 = sobel(im1)
