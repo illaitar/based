@@ -11,6 +11,7 @@ from tqdm import tqdm
 import warnings
 
 from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc
+from regression import regression
 
 
 warnings.filterwarnings("ignore")
@@ -24,7 +25,6 @@ def correlations(results, corr_func):
     for video in videos:
         reference, target = [], []
         for method in methods:
-
             reference.append(table.loc[((table['video'] == video) & (table['method'] == method))]['value'].values[0])
             target.append(results[video][method])
         data[video] = corr_func(reference, target)[0]
@@ -51,7 +51,7 @@ def test_single(args):
     return video, method, value
 
 
-def test_metric_mp(metric, num_workers=1):
+def test_metric_mp(metric, num_workers=8):
     results = defaultdict(lambda: defaultdict(np.float64))
     test = [(video, method, metric) for video in videos for method in methods]
     with Pool(processes=num_workers) as pool:
@@ -80,7 +80,8 @@ if __name__ == "__main__":
             sobel_calc,
             hog_calc,
             lbp_calc,
-            gabor_calc
+            gabor_calc,
+            regression
         ]:
             tic = time.time()
             v = test_metric_mp(component)
