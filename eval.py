@@ -9,7 +9,7 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lpb_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lpb_calc, haff_calc
 
 
 warnings.filterwarnings("ignore")
@@ -75,6 +75,7 @@ def test_metric_mp(metric, num_workers = 1):
 
 if __name__ == "__main__":
     for component in [
+        haff_calc,
         sobel_calc,
         hog_calc,
         lpb_calc,
