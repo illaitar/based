@@ -14,16 +14,6 @@ from metric import gabor_calc, sobel_calc, hog_calc, lpb_calc, haff_calc
 
 
 warnings.filterwarnings("ignore")
-eval_dataset = "based"
-
-
-blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
-subjective_table = f"{eval_dataset}.csv"
-
-
-videos = sorted(os.listdir(f"crops_{eval_dataset}"))
-methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
-methods = [method.replace(".png", "") for method in methods]
 
 
 def correlations(results, corr_func):
@@ -72,21 +62,33 @@ def test_metric_mp(metric, num_workers=1):
 
 
 if __name__ == "__main__":
-    print("\t\t\tDataset:", eval_dataset)
-    print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
-    for component in [
-        haff_calc,
-        sobel_calc,
-        hog_calc,
-        lpb_calc,
-        gabor_calc
+    for eval_dataset in [
+        "based",
+        "rsblur"
     ]:
-        tic = time.time()
-        v = test_metric_mp(component)
-        toc = time.time()
+        blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
+        subjective_table = f"{eval_dataset}.csv"
 
-        plcc = correlations(v, pearsonr)
-        srcc = correlations(v, spearmanr)
-        krcc = correlations(v, kendalltau)
+        videos = sorted(os.listdir(f"crops_{eval_dataset}"))
+        methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
+        methods = [method.replace(".png", "") for method in methods]
 
-        print(f"{component.__name__}\t | {int(toc - tic): 7d} | {plcc:.4f} | {srcc:.4f} | {krcc:.4f} |")
+        print("\t\t\tDataset:", eval_dataset)
+        print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
+        for component in [
+            haff_calc,
+            sobel_calc,
+            hog_calc,
+            lpb_calc,
+            gabor_calc
+        ]:
+            tic = time.time()
+            v = test_metric_mp(component)
+            toc = time.time()
+
+            plcc = correlations(v, pearsonr)
+            srcc = correlations(v, spearmanr)
+            krcc = correlations(v, kendalltau)
+
+            print(f"{component.__name__}\t | {int(toc - tic): 7d} | {plcc:.4f} | {srcc:.4f} | {krcc:.4f} |")
+        print()
