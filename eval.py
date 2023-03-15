@@ -1,4 +1,5 @@
 import os
+import time
 from collections import defaultdict
 
 import pandas as pd
@@ -22,26 +23,23 @@ subjective_table = f"{eval_dataset}.csv"
 
 videos = sorted(os.listdir(f"crops_{eval_dataset}"))
 methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
-methods = [method.replace('.png', '') for method in methods]
+methods = [method.replace(".png", "") for method in methods]
 
 
-
-
-def correlations(results, corr_func = kendalltau):
+def correlations(results, corr_func):
     table = pd.read_csv(f"subj_{eval_dataset}.csv", index_col=0)
 
-    correlations = {}
+    data = {}
 
     for video in videos:
-        data = defaultdict(dict)
         reference, target = [], []
         for method in methods:
 
             reference.append(table.loc[((table['video'] == video) & (table['method'] == method))]['value'].values[0])
             target.append(results[video][method])
-        correlations[video] = corr_func(reference, target)[0]
+        data[video] = corr_func(reference, target)[0]
 
-    return np.mean([elem for elem in list(correlations.values()) if elem is not np.NaN])
+    return np.mean([elem for elem in list(data.values()) if elem is not np.NaN])
 
 
 def test_metric(metric):
@@ -60,10 +58,10 @@ def test_single(args):
     target = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, method + ".png"))
     reference = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, blur_method))
     value = metric(target, reference)
-    return (video, method, value)
+    return video, method, value
 
 
-def test_metric_mp(metric, num_workers = 1):
+def test_metric_mp(metric, num_workers=1):
     results = defaultdict(lambda: defaultdict(np.float64))
     test = [(video, method, metric) for video in videos for method in methods]
     with Pool(processes=num_workers) as pool:
@@ -74,6 +72,8 @@ def test_metric_mp(metric, num_workers = 1):
 
 
 if __name__ == "__main__":
+    print("\t\t\tDataset:", eval_dataset)
+    print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
     for component in [
         haff_calc,
         sobel_calc,
@@ -81,16 +81,12 @@ if __name__ == "__main__":
         lpb_calc,
         gabor_calc
     ]:
+        tic = time.time()
         v = test_metric_mp(component)
-        print(
-            f"ktau[{component.__name__}] =",
-            correlations(v, kendalltau),
-        )
-        print(
-            f"pearson[{component.__name__}] =",
-            correlations(v, pearsonr),
-        )
-        print(
-            f"spearman[{component.__name__}] =",
-            correlations(v, spearmanr),
-        )
+        toc = time.time()
+
+        plcc = correlations(v, pearsonr)
+        srcc = correlations(v, spearmanr)
+        krcc = correlations(v, kendalltau)
+
+        print(f"{component.__name__}\t | {int(toc - tic): 7d} | {plcc:.4f} | {srcc:.4f} | {krcc:.4f} |")
