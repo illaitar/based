@@ -71,17 +71,16 @@ def hog_calc(im1, im2):
 def lbp(image):
     edges = np.rint(sobel(image)).astype(np.uint8)
     gray = cv2.cvtColor(edges, cv2.COLOR_BGR2GRAY)
-    patterns = skimage.feature.local_binary_pattern(gray, P=1, R=8)
+    patterns = skimage.feature.local_binary_pattern(gray, P=4, R=8)
 
     return patterns
 
 
-def lpb_calc(im1, im2):
-    """Calculates mean squared error of image lbp descriptors (ktau=0.63)
+def lbp_calc(im1, im2):
+    """Calculates norm of image lbp descriptors difference
 
-    * P: 8 -> 1, R: 1 -> 8 increases quality (+0.11)
+    * P and R tuning increases quality (+0.11)
     * Edge detectcion increases quality (+0.09)
-    * Convert to np.uint8 before lbp (+0.01)
     * Histogram calculation decreases quality (-0.06)
     """
 

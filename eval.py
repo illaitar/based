@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lpb_calc, haff_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc
 
 
 warnings.filterwarnings("ignore")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
             haff_calc,
             sobel_calc,
             hog_calc,
-            lpb_calc,
+            lbp_calc,
             gabor_calc
         ]:
             tic = time.time()
