@@ -2,8 +2,9 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import PolynomialFeatures
 import pickle
 import os
 from tqdm import tqdm
@@ -52,7 +53,7 @@ def train(data_csv, components, save_path = "./"):
     # model = RandomForestRegressor(n_estimators = 150, random_state = 0)
     X = data.iloc[:, 0:-1].values
     y = data.iloc[:, -1].values
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     X = scaler.fit_transform(X)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     model.fit(X_train, y_train)
@@ -73,17 +74,20 @@ def regression(blur, deblur, path="./"):
     with open(os.path.join(path, 'model.pkl'), 'rb') as fid:
         model = pickle.load(fid)
         values = {}
-    values['gabore'] = gabor_calc(deblur, blur)
-    values['sobel'] = sobel_calc(deblur, blur)
-    values['hog'] = hog_calc(deblur, blur)
+    # values['gabore'] = gabor_calc(deblur, blur)
+    #values['sobel'] = sobel_calc(deblur, blur)
+    #values['hog'] = hog_calc(deblur, blur)
+    values['stack'] = stack(deblur, blur)
     values['lbp'] = lbp_calc(deblur, blur)
-    values['haff'] = haff_calc(deblur, blur)
+    #values['haff'] = haff_calc(deblur, blur)
     values = list(values.values())
     values = np.array(values).reshape(1, -1)
     values = scaler.transform(values)
     return model.predict(values)
 
+def stack(im1, im2):
+    return sobel_calc(im1, im2) * hog_calc(im1, im2)
 
 if __name__ == "__main__":
-    # prepare_dataset([gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc])
-    train(f'dataset_{eval_dataset}.csv', [gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc])
+    prepare_dataset([stack, gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc])
+    train(f'dataset_{eval_dataset}.csv', [stack, haff_calc])
