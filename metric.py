@@ -25,8 +25,8 @@ def gabor_calc(im1, im2):
 
 
 def sobel(image):
-    grad_x = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=19)
-    grad_y = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=19)
+    grad_x = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=13)
+    grad_y = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=13)
 
     grad = np.sqrt(np.square(grad_x) + np.square(grad_y))
     cv2.normalize(grad, grad, 0, 255, cv2.NORM_MINMAX)
@@ -35,7 +35,7 @@ def sobel(image):
 
 
 def sobel_calc(im1, im2):
-    """Calculates mean squared error of image edges (ktau=0.74)
+    """Calculates norm of image edge difference
 
     * Large kernel size increases quality (+0.05)
     * Grayscale conversion descreases quality (-0.02)
