@@ -53,19 +53,17 @@ hog = cv2.HOGDescriptor()
 
 
 def hog_calc(im1, im2):
-    """Calculates mean squared error of image hog descriptors (ktau=0.68)
+    """Calculates norm of image hog descriptors difference
 
     * Grayscale conversion increases quality (+0.05)
     * x4 Downsample increases quality (+0.04)
-    * Edge detection increases quality (+0.01)
-    * Edge detection after x4 downsample decreases quality (-0.04)
     """
 
-    im1 = cv2.resize(cv2.cvtColor(sobel(im1), cv2.COLOR_BGR2GRAY), (128, 128))
-    im2 = cv2.resize(cv2.cvtColor(sobel(im2), cv2.COLOR_BGR2GRAY), (128, 128))
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
-    hog_1 = hog.compute(np.rint(im1).astype(np.uint8))
-    hog_2 = hog.compute(np.rint(im2).astype(np.uint8))
+    hog_1 = hog.compute(im1)
+    hog_2 = hog.compute(im2)
 
     return np.linalg.norm(hog_1 - hog_2)
 
