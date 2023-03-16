@@ -15,12 +15,12 @@ import cv2
 import numpy as np
 
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc
 
 def stack(im1, im2):
     return sobel_calc(im1, im2) * hog_calc(im1, im2)
 
-comps = [sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, gabor_calc]
+comps = [sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, gabor_calc, optical_calc]
 
 
 eval_dataset = "based"

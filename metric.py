@@ -4,6 +4,8 @@ import skimage
 from skimage.metrics import structural_similarity as ssim
 from scipy import ndimage as ndi
 from skimage.filters import gabor_kernel
+import matplotlib.pyplot as plt
+
 
 def ssim_calc(im1, im2):
     return ssim(im1, im2, channel_axis=2)
@@ -179,7 +181,7 @@ def reblur(img):
     for reblur in reblurs:
         edges.append(sobel_sd(reblur))
 
-    sum_ = 0
+    sum_ = 1
     for edge in edges:
         sum_ += np.linalg.norm(edges_base - edge)
 
@@ -195,3 +197,18 @@ def reblur_calc(im1, im2):
     reblur_2 = reblur(im2)
 
     return np.abs(reblur_1 - reblur_2)
+
+
+def optical_calc(im1, im2):
+    # edge_1 = np.rint(sobel(im1)).astype(np.uint8)
+    # edge_2 = np.rint(sobel(im2)).astype(np.uint8)
+
+    edge_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    edge_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+
+    flow = cv2.calcOpticalFlowFarneback(edge_1, edge_2, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+
+    mid = flow[:,:,0]
+    # mid = np.sqrt((flow[:,:,0])**2 + (flow[:,:,1])**2)
+
+    return np.var(mid)
