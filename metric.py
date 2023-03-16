@@ -192,9 +192,10 @@ def optical_calc(im1, im2):
     edge_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     edge_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
-    flow = cv2.calcOpticalFlowFarneback(edge_1, edge_2, None, pyr_scale=0.8, levels=3, winsize=15, iterations=7, poly_n=5, poly_sigma=0, flags=0)
+    # flow = cv2.calcOpticalFlowFarneback(edge_1, edge_2, None, pyr_scale=0.8, levels=3, winsize=15, iterations=7, poly_n=5, poly_sigma=0, flags=0)
+    flow2 = cv2.calcOpticalFlowFarneback(edge_2, edge_1, None, pyr_scale=0.8, levels=3, winsize=15, iterations=7, poly_n=5, poly_sigma=0, flags=0)
 
-    mid = flow[:,:,0]
+    mid = flow2[:,:,0]
     # mid = np.sqrt(np.square(flow[:,:,0]) + np.square(flow[:,:,1]))
 
     return np.var(mid)
