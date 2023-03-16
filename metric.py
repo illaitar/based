@@ -74,7 +74,7 @@ def hog_calc(im1, im2):
     hog_1 = hog.compute(im1)
     hog_2 = hog.compute(im2)
 
-    return np.linalg.norm(hog_1 - hog_2)
+    return -np.linalg.norm(hog_1 - hog_2)
 
 
 def lbp(image):
@@ -96,7 +96,7 @@ def lbp_calc(im1, im2):
     lbp_1 = lbp(im1)
     lbp_2 = lbp(im2)
 
-    return np.linalg.norm(lbp_1 - lbp_2)
+    return -np.linalg.norm(lbp_1 - lbp_2)
 
 
 def haff_calc(im1, im2):
