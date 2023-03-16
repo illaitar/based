@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, gabore_compare, ssim_calc, reblur_calc, optical_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc
 from regression import regression
 
 
