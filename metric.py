@@ -7,6 +7,23 @@ from skimage.filters import gabor_kernel
 import matplotlib.pyplot as plt
 
 
+import lpips as lpips_base
+import torchvision.transforms as transforms
+loss_fn_alex = None
+
+def lpips_calc(img1, img2):
+    global loss_fn_alex
+    if loss_fn_alex is None:
+        loss_fn_alex = lpips_base.LPIPS(net='alex',verbose=False)
+    transform = transforms.ToTensor()
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
+    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+    img1 = transform(img1)
+    img2 = transform(img2)
+    res = loss_fn_alex(img1, img2).detach().numpy()[0][0][0][0]
+    return np.round(res,decimals=4)
+
+
 def ssim_calc(im1, im2):
     return ssim(im1, im2, channel_axis=2)
 

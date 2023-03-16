@@ -10,8 +10,10 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc, lpips_calc
 from regression import regression
+
+import matplotlib.pyplot as plt
 
 
 warnings.filterwarnings("ignore")
@@ -61,6 +63,49 @@ def test_metric_mp(metric, num_workers=8):
     return results
 
 
+def get_examples(better, worse):
+    examples = []
+    for video in videos:
+        table = pd.read_csv(f"subj_{eval_dataset}.csv", index_col=0)
+        subj = {}
+        for i, method in enumerate(methods):
+            subj[method] =  table.loc[((table['video'] == video) & (table['method'] == method))]['value'].values[0]
+
+        for method1 in methods:
+            for method2 in methods:
+                if method1 == method2:
+                    continue
+                if ((subj[method1] >  subj[method2]) and (better[video][method1] > better[video][method2]) and (worse[video][method1] < worse[video][method2])):
+                    examples.append((method1, method2, video, np.round(better[video][method1][0], decimals=4), np.round(better[video][method2][0], decimals=4), np.round(worse[video][method1], decimals=4), np.round(worse[video][method2], decimals=4)))
+    return examples
+
+
+def show_examples(examples, name_better, name_worse):
+    for i, example in enumerate(examples):
+        method1, method2, video, better1, better2, worse1, worse2 = example
+
+        im1 = cv2.imread(f"./crops_{eval_dataset}/{video}/{method1}.png")
+        im2 = cv2.imread(f"./crops_{eval_dataset}/{video}/{method2}.png")
+
+        im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+        im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+
+        figure, axis = plt.subplots(1, 2)
+        figure.set_size_inches(9, 5)
+
+        axis[0].imshow(im1)
+        axis[0].set_title(f"{name_better}:{round(better1, 4)}; {name_worse}:{round(worse1, 4)}")
+
+        axis[1].imshow(im2)
+        axis[1].set_title(f"{name_better}:{round(better2, 4)}; {name_worse}:{round(worse2, 4)}")
+        os.makedirs("./examples", exist_ok = True)
+        os.makedirs(f"./examples/{eval_dataset}", exist_ok = True)
+        figure.savefig(f"./examples/{eval_dataset}/{i}.png")   # save the figure to file
+        plt.close(figure)
+
+
+
+
 if __name__ == "__main__":
     for eval_dataset in [
         "based",
@@ -77,15 +122,16 @@ if __name__ == "__main__":
         print("\t\t\tDataset:", eval_dataset)
         print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
         for component in [
-            optical_calc,
-            reblur_calc,
-            haff_calc,
-            sobel_calc,
+            # optical_calc,
+            # reblur_calc,
+            # haff_calc,
+            # sobel_calc,
             hog_calc,
-            lbp_calc,
-            gabor_calc,
-            ssim_calc,
-            regression
+            # lbp_calc,
+            # gabor_calc,
+            # ssim_calc,
+            # regression,
+            # lpips_calc
         ]:
             tic = time.time()
             v = test_metric_mp(component)
@@ -96,4 +142,21 @@ if __name__ == "__main__":
             krcc = correlations(v, kendalltau)
 
             print(f"{component.__name__}\t | {int(toc - tic): 7d} | {plcc:.4f} | {srcc:.4f} | {krcc:.4f} |")
+
+
         print()
+
+        # eval_dataset = "based"
+
+        # blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
+        # subjective_table = f"{eval_dataset}.csv"
+
+        # videos = sorted(os.listdir(f"crops_{eval_dataset}"))
+        # methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
+        # methods = [method.replace(".png", "") for method in methods]
+
+        # v1 = test_metric_mp(regression)
+        # v2 = test_metric_mp(lpips_calc)
+
+        # examples = get_examples(v1, v2)
+        # show_examples(examples, "based", "lpips")
