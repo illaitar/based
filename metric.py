@@ -99,6 +99,17 @@ def lbp_calc(im1, im2):
     return -np.linalg.norm(lbp_1 - lbp_2)
 
 
+def haff(img):
+    edges = cv2.Canny(img, 150, 255)
+    lines = cv2.HoughLinesP(edges, 200, np.pi / 3, 150, None, 0, 0)
+    image = np.zeros_like(img)
+    if lines is not None:
+        for linee in lines:
+            line = linee[0]
+            cv2.line(image, (line[0], line[1]), (line[2], line[3]), (0, 255, 0), thickness=5)
+    return image
+
+
 def haff_calc(im1, im2):
     """Calculates norm of image lines difference
 
@@ -106,22 +117,10 @@ def haff_calc(im1, im2):
     * Line thickness increases quality
     """
 
-    edges1 = cv2.Canny(im1, 150, 255)
-    edges2 = cv2.Canny(im2, 150, 255)
-    lines1 = cv2.HoughLinesP(edges1, 200, np.pi / 3, 150, None, 0, 0)
-    lines2 = cv2.HoughLinesP(edges2, 200, np.pi / 3, 150, None, 0, 0)
-    image1 = np.zeros_like(im1)
-    image2 = np.zeros_like(im2)
-    if lines1 is not None:
-        for linee in lines1:
-            line = linee[0]
-            cv2.line(image1, (line[0], line[1]), (line[2], line[3]), (0, 255, 0), thickness=5)
-    if lines2 is not None:
-        for linee in lines2:
-            line = linee[0]
-            cv2.line(image2, (line[0], line[1]), (line[2], line[3]), (0, 255, 0), thickness=5)
+    haff_1 = haff(im1)
+    haff_2 = haff(im2)
 
-    return np.linalg.norm(image1 - image2)
+    return np.linalg.norm(haff_1 - haff_2)
 
 
 def sobel_sd(img):
@@ -139,16 +138,17 @@ def sobel_sd(img):
 
 
 def reblur(img):
-    kernels = [11, 13, 15, 17]
+    kernels = [17]
     reblurs = []
+
     for kernel in kernels:
         reblurs.append(cv2.GaussianBlur(img, (kernel, kernel), 0))
 
-    edges_base = sobel_sd(img)
+    edges_base = haff(img)
 
     edges = []
     for reblur in reblurs:
-        edges.append(sobel_sd(reblur))
+        edges.append(haff(reblur))
 
     sum_ = 1
     for edge in edges:
