@@ -168,12 +168,22 @@ def sobel_sd(img):
 
 
 def reblur(img):
-    reblur = cv2.GaussianBlur(img,(7,7),0)
+    kernels = [11, 13, 15, 17]
+    reblurs = []
+    for kernel in kernels:
+        reblurs.append(cv2.GaussianBlur(img, (kernel, kernel), 0))
 
-    edges1 = sobel_sd(img)
-    edges2 = sobel_sd(reblur)
+    edges_base = sobel_sd(img)
 
-    return np.linalg.norm(edges1 - edges2)
+    edges = []
+    for reblur in reblurs:
+        edges.append(sobel_sd(reblur))
+
+    sum_ = 0
+    for edge in edges:
+        sum_ += np.linalg.norm(edges_base - edge)
+
+    return sum_
 
 
 def reblur_calc(im1, im2):

@@ -77,12 +77,12 @@ if __name__ == "__main__":
         print("\t\t\tDataset:", eval_dataset)
         print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
         for component in [
+            reblur_calc,
             haff_calc,
             sobel_calc,
             hog_calc,
             lbp_calc,
             gabor_calc,
-            reblur_calc,
             ssim_calc,
             regression
         ]:
