@@ -247,10 +247,11 @@ def fft_calc(im1, im2):
 def laplac(im1):
     return cv2.Laplacian(im1, cv2.CV_64F).var()
 
+
 def laplac_calc(im1, im2):
 
-    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
-    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (256, 256))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (256, 256))
 
     lap_1 = fft(im1)
     lap_2 = fft(im2)
