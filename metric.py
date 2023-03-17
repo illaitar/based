@@ -201,7 +201,7 @@ def optical_calc(im1, im2):
     return np.var(mid)
 
 
-def fft(image, size=60):
+def fft(image, size=5):
     (h, w) = image.shape
     (cX, cY) = (int(w / 2.0), int(h / 2.0))
     fft = np.fft.fft2(image)
