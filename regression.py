@@ -72,16 +72,16 @@ def regression(img1, img2):
 
 components = [
     # lpips_calc,
-    # ssim_calc,
-    # gabor_calc,
+    ssim_calc,
+    gabor_calc,
     sobel_calc,
-    # hog_calc,
+    hog_calc,
     lbp_calc,
-    # haff_calc,
-    # reblur_calc,
+    haff_calc,
+    reblur_calc,
     # optical_calc,
-    fft_calc,
-    fft_lowfreq,
+    # fft_calc,
+    # fft_lowfreq,
     laplac_calc,
     # size_calc
 ]
