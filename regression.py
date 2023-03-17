@@ -17,7 +17,7 @@ from sklearn.model_selection import cross_val_score
 from metric import *
 
 def size_calc(im1, im2):
-    return im1.shape[0]
+    return im1
 
 def prepare_dataset(components):
     subj = pd.read_csv(f"subj_{eval_dataset}.csv", index_col=0)
@@ -83,6 +83,7 @@ components = [
     # fft_calc,
     # fft_lowfreq,
     laplac_calc,
+    color_calc,
     # size_calc
 ]
 

@@ -18,7 +18,8 @@ __all__ = [
     "optical_calc",
     "fft_calc",
     "fft_lowfreq",
-    "laplac_calc"
+    "laplac_calc",
+    "color_calc"
 ]
 
 
@@ -285,3 +286,29 @@ def laplac_calc(im1, im2):
     lap_2 = laplac(im2)
 
     return np.linalg.norm(lap_1 - lap_2)
+
+
+def color(im):
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+	# split the image into its respective RGB components
+    (B, G, R) = cv2.split(im.astype("float"))
+	# compute rg = R - G
+    rg = np.absolute(R - G)
+	# compute yb = 0.5 * (R + G) - B
+    yb = np.absolute(0.5 * (R + G) - B)
+	# compute the mean and standard deviation of both `rg` and `yb`
+    (rbMean, rbStd) = (np.mean(rg), np.std(rg))
+    (ybMean, ybStd) = (np.mean(yb), np.std(yb))
+	# combine the mean and standard deviations
+    stdRoot = np.sqrt((rbStd ** 2) + (ybStd ** 2))
+    meanRoot = np.sqrt((rbMean ** 2) + (ybMean ** 2))
+	# derive the "colorfulness" metric and return it
+    return stdRoot + (0.3 * meanRoot)
+
+
+def color_calc(im1, im2):
+
+    c_1 = color(im1)
+    c_2 = color(im2)
+
+    return np.abs(c_1 - c_2)
