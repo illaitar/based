@@ -58,7 +58,7 @@ def train(data_csv, components, save_path = "./"):
     labels = [i for i in data.columns if i not in components and i != 'result']
     data.drop(columns = labels,  axis=1, inplace=True)
     #model = LinearRegression(fit_intercept=False)
-    model = RandomForestRegressor(n_estimators = 160, random_state = 1, criterion='squared_error')
+    model = RandomForestRegressor(n_estimators = 160, random_state = 4, criterion='squared_error')
     # model = Pipeline([('poly', PolynomialFeatures(degree=2)),
     #                   ('linear', LinearRegression(fit_intercept=False))])
     # model = RANSACRegressor(LinearRegression(),
