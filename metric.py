@@ -211,7 +211,7 @@ def fft(image, size=20):
     recon = np.fft.ifft2(fftShift)
     magnitude = 20 * np.log(np.abs(recon))
     mean = np.mean(magnitude)
-    return mean
+    return magnitude
 
 
 def fft_calc(im1, im2):
@@ -222,4 +222,4 @@ def fft_calc(im1, im2):
     fft_1 = fft(im1)
     fft_2 = fft(im2)
 
-    return -np.abs(fft_1 - fft_2)
+    return -np.linalg.norm(fft_1 - fft_2)
