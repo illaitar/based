@@ -18,9 +18,9 @@ import numpy as np
 from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc, fft_calc
 
 def stack(im1, im2):
-    return sobel_calc(im1, im2) * hog_calc(im1, im2)
+    return sobel_calc(im1, im2) * fft_calc(im1, im2) * reblur_calc(im1, im2)
 
-comps = [sobel_calc, hog_calc, lbp_calc, ssim_calc, gabor_calc, reblur_calc, fft_calc]
+comps = [sobel_calc, hog_calc, lbp_calc, ssim_calc, gabor_calc, reblur_calc, fft_calc, optical_calc]
 
 
 eval_dataset = "based"
@@ -58,7 +58,7 @@ def train(data_csv, components, save_path = "./"):
     labels = [i for i in data.columns if i not in components and i != 'result']
     data.drop(columns = labels,  axis=1, inplace=True)
     #model = LinearRegression(fit_intercept=False)
-    model = RandomForestRegressor(n_estimators = 160, random_state = 0, criterion='squared_error')
+    model = RandomForestRegressor(n_estimators = 160, random_state = 1, criterion='squared_error')
     # model = Pipeline([('poly', PolynomialFeatures(degree=2)),
     #                   ('linear', LinearRegression(fit_intercept=False))])
     # model = RANSACRegressor(LinearRegression(),
@@ -104,5 +104,5 @@ def regression(blur, deblur, path="./"):
 
 
 if __name__ == "__main__":
-    prepare_dataset(comps)
+    # prepare_dataset(comps)
     train(f'dataset_{eval_dataset}.csv', comps)

@@ -131,7 +131,7 @@ if __name__ == "__main__":
             # lbp_calc,
             # gabor_calc,
             # ssim_calc,
-            # regression,
+            regression,
             # lpips_calc
         ]:
             tic = time.time()
