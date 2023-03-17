@@ -103,6 +103,33 @@ def show_examples(examples, name_better, name_worse):
         plt.close(figure)
 
 
+def metrics_correlations(results1, results2, metric1, metric2, videos):
+    r1 = []
+    r2 = []
+    for video in videos:
+        r1.append(
+                    np.mean(list(results1[video].values()))
+                 )
+        r2.append(
+                    np.mean(list(results2[video].values()))
+                 )
+    corr = kendalltau(r1, r2)[0]
+    return corr
+
+
+def metrics_correlations_all(results, metrics):
+    data = {}
+    data["metric"] = [metric.__name__  for metric in metrics]
+    for i1, metric in enumerate(metrics):
+        tmp = []
+        for i2, metric2 in enumerate(metrics):
+            if metric.__name__ == metric2.__name__:
+                tmp.append(1)
+            else:
+                tmp.append(metrics_correlations(results[i1], results[i2], metric, metric2, videos))
+        data[metric.__name__] = tmp
+    corrs = pd.DataFrame(data)
+    corrs.to_csv(f"metrics_corrs_{eval_dataset}.csv")
 
 
 if __name__ == "__main__":
@@ -145,19 +172,25 @@ if __name__ == "__main__":
             print(f"{component.__name__}\t | {int(toc - tic): 7d} | {plcc:.4f} | {srcc:.4f} | {krcc:.4f} |")
 
 
+
         print()
 
-        # eval_dataset = "based"
+        # components = [
+        #     laplac_calc,
+        #     fft_calc,
+        #     optical_calc,
+        #     reblur_calc,
+        #     haff_calc,
+        #     sobel_calc,
+        #     hog_calc,
+        #     lbp_calc,
+        #     gabor_calc,
+        #     ssim_calc,
+        #     regression,
+        #     lpips_calc
+        # ]
 
-        # blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
-        # subjective_table = f"{eval_dataset}.csv"
-
-        # videos = sorted(os.listdir(f"crops_{eval_dataset}"))
-        # methods = sorted(os.listdir(os.path.join(f"crops_{eval_dataset}", videos[0])))
-        # methods = [method.replace(".png", "") for method in methods]
-
-        # v1 = test_metric_mp(regression)
-        # v2 = test_metric_mp(lpips_calc)
-
-        # examples = get_examples(v1, v2)
-        # show_examples(examples, "based", "lpips")
+        # rs = []
+        # for component in components:
+        #     rs.append(test_metric_mp(component))
+        # metrics_correlations_all(rs, components)

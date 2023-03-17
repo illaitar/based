@@ -17,6 +17,7 @@ __all__ = [
     "reblur_calc",
     "optical_calc",
     "fft_calc",
+    "fft_lowfreq",
     "laplac_calc"
 ]
 
@@ -219,9 +220,6 @@ def fft(image, size=35):
     fft = np.fft.fft2(image)
     fftShift = np.fft.fftshift(fft)
     fftShift[cY - size:cY + size, cX - size:cX + size] = 0
-    #new_shift = np.zeros_like(fftShift)
-    #new_shift[cY - upper_size:cY + upper_size, cX - upper_size:cX + upper_size] = fftShift[cY - upper_size:cY + upper_size, cX - upper_size:cX + upper_size]
-   # fftShift = new_shift
     fftShift = np.fft.ifftshift(fftShift)
     recon = np.fft.ifft2(fftShift)
     magnitude = 20 * np.log(np.abs(recon))
@@ -244,16 +242,46 @@ def fft_calc(im1, im2):
     return sum_
 
 
+def fft_lfq(image, size=35):
+    (h, w) = image.shape
+    (cX, cY) = (int(w / 2.0), int(h / 2.0))
+    fft = np.fft.fft2(image)
+    fftShift = np.fft.fftshift(fft)
+    f = np.zeros_like(fftShift)
+    f[cY - size:cY + size, cX - size:cX + size] = fftShift[cY - size:cY + size, cX - size:cX + size]
+    fftShift = f
+    fftShift = np.fft.ifftshift(fftShift)
+    recon = np.fft.ifft2(fftShift)
+    magnitude = 20 * np.log(np.abs(recon))
+    return magnitude
+
+
+def fft_lowfreq(im1, im2):
+
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
+    freqs = [30]
+
+    sum_ = 0
+    for freq in freqs:
+        fft_1 = fft_lfq(im1, freq)
+        fft_2 = fft_lfq(im2, freq)
+        sum_ += np.linalg.norm(fft_1 - fft_2)
+
+    return sum_
+
+
 def laplac(im1):
-    return cv2.Laplacian(im1, cv2.CV_64F).var()
+    return cv2.Laplacian(im1, cv2.CV_64F)
 
 
 def laplac_calc(im1, im2):
 
-    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (256, 256))
-    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (256, 256))
+    im1 = cv2.resize(im1, (128, 128))
+    im2 = cv2.resize(im2, (128, 128))
 
-    lap_1 = fft(im1)
-    lap_2 = fft(im2)
+    lap_1 = laplac(im1)
+    lap_2 = laplac(im2)
 
     return np.linalg.norm(lap_1 - lap_2)
