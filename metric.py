@@ -222,4 +222,4 @@ def fft_calc(im1, im2):
     fft_1 = fft(im1)
     fft_2 = fft(im2)
 
-    return np.abs(fft_1 - fft_2)
+    return -np.abs(fft_1 - fft_2)
