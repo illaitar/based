@@ -2,6 +2,7 @@ import os
 import time
 from collections import defaultdict
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import cv2
 from pathos.multiprocessing import Pool
@@ -10,10 +11,8 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc, lpips_calc, fft_calc, laplac_calc
+from metric import *
 from regression import regression
-
-import matplotlib.pyplot as plt
 
 
 warnings.filterwarnings("ignore")
