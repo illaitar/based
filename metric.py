@@ -201,7 +201,7 @@ def optical_calc(im1, im2):
     return np.var(mid)
 
 
-def fft(image, size=5):
+def fft(image, size=20):
     (h, w) = image.shape
     (cX, cY) = (int(w / 2.0), int(h / 2.0))
     fft = np.fft.fft2(image)
@@ -216,10 +216,10 @@ def fft(image, size=5):
 
 def fft_calc(im1, im2):
 
-    gray_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    gray_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
-    fft_1 = fft(gray_1)
-    fft_2 = fft(gray_2)
+    fft_1 = fft(im1)
+    fft_2 = fft(im2)
 
     return np.abs(fft_1 - fft_2)
