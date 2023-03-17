@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 import warnings
 
-from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc, lpips_calc
+from metric import gabor_calc, sobel_calc, hog_calc, lbp_calc, haff_calc, ssim_calc, reblur_calc, optical_calc, lpips_calc, fft_calc
 from regression import regression
 
 import matplotlib.pyplot as plt
@@ -122,7 +122,8 @@ if __name__ == "__main__":
         print("\t\t\tDataset:", eval_dataset)
         print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
         for component in [
-            optical_calc,
+            fft_calc,
+            # optical_calc,
             # reblur_calc,
             # haff_calc,
             # sobel_calc,

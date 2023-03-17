@@ -189,13 +189,37 @@ def optical_calc(im1, im2):
     # edge_1 = np.rint(sobel(im1)).astype(np.uint8)
     # edge_2 = np.rint(sobel(im2)).astype(np.uint8)
 
-    edge_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    edge_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+    edge_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2YUV)[:,:,0]
+    edge_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2YUV)[:,:,0]
 
     # flow = cv2.calcOpticalFlowFarneback(edge_1, edge_2, None, pyr_scale=0.8, levels=3, winsize=15, iterations=7, poly_n=5, poly_sigma=0, flags=0)
-    flow2 = cv2.calcOpticalFlowFarneback(edge_2, edge_1, None, pyr_scale=0.8, levels=3, winsize=15, iterations=7, poly_n=5, poly_sigma=0, flags=0)
+    flow2 = cv2.calcOpticalFlowFarneback(edge_2, edge_1, None, pyr_scale=0.8, levels=3, winsize=15, iterations=10, poly_n=5, poly_sigma=1, flags=0)
 
     mid = flow2[:,:,1]
     # mid = np.sqrt(np.square(flow[:,:,0]) + np.square(flow[:,:,1]))
 
     return np.var(mid)
+
+
+def fft(image, size=60):
+    (h, w) = image.shape
+    (cX, cY) = (int(w / 2.0), int(h / 2.0))
+    fft = np.fft.fft2(image)
+    fftShift = np.fft.fftshift(fft)
+    fftShift[cY - size:cY + size, cX - size:cX + size] = 0
+    fftShift = np.fft.ifftshift(fftShift)
+    recon = np.fft.ifft2(fftShift)
+    magnitude = 20 * np.log(np.abs(recon))
+    mean = np.mean(magnitude)
+    return mean
+
+
+def fft_calc(im1, im2):
+
+    gray_1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    gray_2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+
+    fft_1 = fft(gray_1)
+    fft_2 = fft(gray_2)
+
+    return np.abs(fft_1 - fft_2)
