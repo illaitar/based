@@ -201,7 +201,7 @@ def optical_calc(im1, im2):
     return np.var(mid)
 
 
-def fft(image, size=30):
+def fft(image, size=35):
     (h, w) = image.shape
     (cX, cY) = (int(w / 2.0), int(h / 2.0))
     fft = np.fft.fft2(image)
@@ -210,7 +210,6 @@ def fft(image, size=30):
     fftShift = np.fft.ifftshift(fftShift)
     recon = np.fft.ifft2(fftShift)
     magnitude = 20 * np.log(np.abs(recon))
-    mean = np.mean(magnitude)
     return magnitude
 
 
@@ -219,7 +218,12 @@ def fft_calc(im1, im2):
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
-    fft_1 = fft(im1)
-    fft_2 = fft(im2)
+    freqs = [30]
 
-    return np.linalg.norm(fft_1 - fft_2)
+    sum_ = 0
+    for freq in freqs:
+        fft_1 = fft(im1, freq)
+        fft_2 = fft(im2, freq)
+        sum_ += np.linalg.norm(fft_1 - fft_2)
+
+    return sum_
