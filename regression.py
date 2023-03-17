@@ -79,7 +79,7 @@ components = [
     lbp_calc,
     haff_calc,
     reblur_calc,
-    # optical_calc,
+    optical_calc,
     # fft_calc,
     # fft_lowfreq,
     laplac_calc,
