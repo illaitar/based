@@ -230,3 +230,17 @@ def fft_calc(im1, im2):
         sum_ += np.linalg.norm(fft_1 - fft_2)
 
     return sum_
+
+
+def laplac(im1):
+    return cv2.Laplacian(im1, cv2.CV_64F).var()
+
+def laplac_calc(im1, im2):
+
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
+    lap_1 = fft(im1)
+    lap_2 = fft(im2)
+
+    return np.linalg.norm(lap_1 - lap_2)
