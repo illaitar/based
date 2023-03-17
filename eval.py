@@ -122,7 +122,7 @@ if __name__ == "__main__":
         print("\t\t\tDataset:", eval_dataset)
         print("Name\t\t | Time, s |  PLCC  |  SRCC  |  KRCC  |")
         for component in [
-            # fft_calc,
+            fft_calc,
             # optical_calc,
             # reblur_calc,
             # haff_calc,
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             # lbp_calc,
             # gabor_calc,
             # ssim_calc,
-            regression,
+            # regression,
             # lpips_calc
         ]:
             tic = time.time()
