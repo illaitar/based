@@ -115,10 +115,13 @@ def hog_calc(im1, im2):
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
+    # im1 = cv2.equalizeHist(im1)
+    # im2 = cv2.equalizeHist(im2)
+
     hog_1 = hog.compute(im1)
     hog_2 = hog.compute(im2)
 
-    return -np.linalg.norm(hog_1 - hog_2)
+    return np.linalg.norm(hog_1 - hog_2)
 
 
 def lbp(image):

@@ -90,13 +90,13 @@ components = [
 
 
 if __name__ == "__main__":
-    # eval_dataset = "rsblur"
+    eval_dataset = "rsblur"
 
-    # prepare_dataset(components)
+    prepare_dataset(components)
 
     eval_dataset = "based"
 
-    # prepare_dataset(components)
+    prepare_dataset(components)
 
 
     train(f"dataset_{eval_dataset}.csv", components)
