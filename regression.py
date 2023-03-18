@@ -76,7 +76,7 @@ components = [
     gabor_calc,
     sobel_calc,
     hog_calc,
-    lbp_calc,
+    # lbp_calc,
     haff_calc,
     reblur_calc,
     optical_calc,
