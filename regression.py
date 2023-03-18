@@ -40,8 +40,9 @@ def train(data_csv, components):
     data = pd.read_csv(data_csv, index_col=0)
 
     # model = RANSACRegressor(
+    # 220 best
     model = Pipeline([
-        ("regressor", RandomForestRegressor(n_estimators=250, random_state=8, criterion="squared_error"))
+        ("regressor", RandomForestRegressor(n_estimators=220, random_state=8, criterion="squared_error"))
         # ("regressor", LinearRegression())
     ])
         # ,max_trials=50,min_samples=10,random_state=0)
@@ -89,26 +90,24 @@ components = [
 
 
 if __name__ == "__main__":
-    eval_dataset = "rsblur"
+    # eval_dataset = "rsblur"
 
-    prepare_dataset(components)
+    # prepare_dataset(components)
 
     eval_dataset = "based"
 
-    prepare_dataset(components)
+    # prepare_dataset(components)
 
 
     train(f"dataset_{eval_dataset}.csv", components)
 
 
-if __name__ == "__main__":
-    data_rsblur = pd.read_csv(f"dataset_rsblur.csv", index_col=0)
-    data_based = pd.read_csv(f"dataset_based.csv", index_col=0)
+# if __name__ == "__main__":
+#     data_based = pd.read_csv("dataset_based.csv", index_col=0)
+#     subj = pd.read_csv(f"subj_based.csv", index_col=0)
+#     data_based["video"] = [record.video for record in subj.itertuples()]
 
-    for column in data_based.columns.drop("result"):
-        points_rsblur = data_rsblur.groupby(column).result.mean().to_frame().reset_index()
-        points_based = data_based.groupby(column).result.mean().to_frame().reset_index()
-        points = pd.concat([points_rsblur.assign(dataset="rsblur"), points_based.assign(dataset="based")])
-        points[column] = MinMaxScaler().fit_transform(np.array(points[column]).reshape(-1, 1))
-        sns.scatterplot(x=column, y="result", data=points, hue="dataset", alpha=0.5)
-        plt.show()
+#     for column in data_based.columns.drop("result"):
+#         g = sns.scatterplot(x=column, y="result", data=data_based, hue="video", alpha=1)
+#         sns.move_legend(g, "upper left", bbox_to_anchor=(1, 1), title='Blya')
+#         plt.show()
