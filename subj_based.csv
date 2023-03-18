@@ -10,7 +10,7 @@
 8,restormer_local,0.6192820616827349,4k_penguin_5.mp4
 9,vrt_gopro,3.3185113084243043,4k_penguin_5.mp4
 10,vrt_reds,3.402682840415367,4k_penguin_5.mp4
-11,real_blur,0.0,4k_penguin_5.mp4
+11,real_blur,0.6192820616827349,4k_penguin_5.mp4
 0,deblurgan_inception,0.6586819974860294,4k_dragon_3.mp4
 1,deeprft_gopro,0.8951943336214416,4k_dragon_3.mp4
 2,deeprft_reds,0.928418000972183,4k_dragon_3.mp4
@@ -22,7 +22,7 @@
 8,restormer_local,0.604870602368357,4k_dragon_3.mp4
 9,vrt_gopro,5.77745280577497,4k_dragon_3.mp4
 10,vrt_reds,2.3429721152673526,4k_dragon_3.mp4
-11,real_blur,0.0,4k_dragon_3.mp4
+11,real_blur,0.604870602368357,4k_dragon_3.mp4
 0,deblurgan_inception,1.3345070003620638,4k_lullaby_7.mp4
 1,deeprft_gopro,1.0499971265809882,4k_lullaby_7.mp4
 2,deeprft_reds,0.588066981946499,4k_lullaby_7.mp4
@@ -34,7 +34,7 @@
 8,restormer_local,1.1792491344099492,4k_lullaby_7.mp4
 9,vrt_gopro,3.000135057242658,4k_lullaby_7.mp4
 10,vrt_reds,2.9181569562787937,4k_lullaby_7.mp4
-11,real_blur,0.0,4k_lullaby_7.mp4
+11,real_blur,0.488066981946499,4k_lullaby_7.mp4
 0,deblurgan_inception,1.838339374928976,4k_racer_3.mp4
 1,deeprft_gopro,0.9368425956201686,4k_racer_3.mp4
 2,deeprft_reds,1.195204410940271,4k_racer_3.mp4
@@ -46,7 +46,7 @@
 8,restormer_local,0.6251591186200458,4k_racer_3.mp4
 9,vrt_gopro,5.015869310684172,4k_racer_3.mp4
 10,vrt_reds,3.032519110564653,4k_racer_3.mp4
-11,real_blur,0.0,4k_racer_3.mp4
+11,real_blur,0.6251591186200458,4k_racer_3.mp4
 0,deblurgan_inception,1.0592487957532073,4k_blanket_3.mp4
 1,deeprft_gopro,0.9854232202288823,4k_blanket_3.mp4
 2,deeprft_reds,0.6710265818285117,4k_blanket_3.mp4
@@ -58,7 +58,7 @@
 8,restormer_local,0.5468911302429575,4k_blanket_3.mp4
 9,vrt_gopro,1.2284168697296673,4k_blanket_3.mp4
 10,vrt_reds,1.040288059695429,4k_blanket_3.mp4
-11,real_blur,0.0,4k_blanket_3.mp4
+11,real_blur,0.4468911302429575,4k_blanket_3.mp4
 0,deblurgan_inception,1.4915046692314,4k_dhard_3.mp4
 1,deeprft_gopro,0.8365988432432843,4k_dhard_3.mp4
 2,deeprft_reds,0.8254025030851794,4k_dhard_3.mp4
@@ -70,7 +70,7 @@
 8,restormer_local,0.7282073648098837,4k_dhard_3.mp4
 9,vrt_gopro,2.9663030149955945,4k_dhard_3.mp4
 10,vrt_reds,2.4098355918142014,4k_dhard_3.mp4
-11,real_blur,0.0,4k_dhard_3.mp4
+11,real_blur,0.6288160604390121,4k_dhard_3.mp4
 0,deblurgan_inception,1.2088388192304897,4k_camry_3.mp4
 1,deeprft_gopro,0.5831922497808028,4k_camry_3.mp4
 2,deeprft_reds,0.6318295544114088,4k_camry_3.mp4
@@ -82,7 +82,7 @@
 8,restormer_local,0.841971735706084,4k_camry_3.mp4
 9,vrt_gopro,3.4101578277828213,4k_camry_3.mp4
 10,vrt_reds,1.0827857664418779,4k_camry_3.mp4
-11,real_blur,0.0,4k_camry_3.mp4
+11,real_blur,0.5831922497808028,4k_camry_3.mp4
 0,deblurgan_inception,2.5765367783439825,4k_minerals_4.mp4
 1,deeprft_gopro,1.2125135644590945,4k_minerals_4.mp4
 2,deeprft_reds,1.5627281864009461,4k_minerals_4.mp4
@@ -94,7 +94,7 @@
 8,restormer_local,0.7477878624395984,4k_minerals_4.mp4
 9,vrt_gopro,4.887758839294311,4k_minerals_4.mp4
 10,vrt_reds,2.4158210666856688,4k_minerals_4.mp4
-11,real_blur,0.0,4k_minerals_4.mp4
+11,real_blur,0.6189936928742193,4k_minerals_4.mp4
 0,deblurgan_inception,4.2285798793162686,4k_arabic_3.mp4
 1,deeprft_gopro,3.51646498112092,4k_arabic_3.mp4
 2,deeprft_reds,4.0235096847086504,4k_arabic_3.mp4
@@ -106,7 +106,7 @@
 8,restormer_local,2.008263836811161,4k_arabic_3.mp4
 9,vrt_gopro,7.765466444260006,4k_arabic_3.mp4
 10,vrt_reds,5.106493018540321,4k_arabic_3.mp4
-11,real_blur,0.0,4k_arabic_3.mp4
+11,real_blur,0.920104429366217,4k_arabic_3.mp4
 0,deblurgan_inception,3.2226537143047076,4k_mtg_3.mp4
 1,deeprft_gopro,1.301542106995342,4k_mtg_3.mp4
 2,deeprft_reds,1.9911252565335849,4k_mtg_3.mp4
@@ -118,7 +118,7 @@
 8,restormer_local,0.6528251793332135,4k_mtg_3.mp4
 9,vrt_gopro,5.458760774771766,4k_mtg_3.mp4
 10,vrt_reds,3.5191918551953734,4k_mtg_3.mp4
-11,real_blur,0.0,4k_mtg_3.mp4
+11,real_blur,0.6528251793332135,4k_mtg_3.mp4
 0,deblurgan_inception,3.5626233660493263,4k_rolling_3.mp4
 1,deeprft_gopro,2.73800513974618,4k_rolling_3.mp4
 2,deeprft_reds,2.436246569997353,4k_rolling_3.mp4
@@ -130,7 +130,7 @@
 8,restormer_local,0.7746115816349055,4k_rolling_3.mp4
 9,vrt_gopro,4.913093373615872,4k_rolling_3.mp4
 10,vrt_reds,4.839856206002991,4k_rolling_3.mp4
-11,real_blur,0.0,4k_rolling_3.mp4
+11,real_blur,0.5826518188990921,4k_rolling_3.mp4
 0,deblurgan_inception,0.7974957636930573,4k_dice_4.mp4
 1,deeprft_gopro,0.9688814632335455,4k_dice_4.mp4
 2,deeprft_reds,0.5632216268266278,4k_dice_4.mp4
@@ -142,7 +142,7 @@
 8,restormer_local,0.7173570976482705,4k_dice_4.mp4
 9,vrt_gopro,2.2992106321889345,4k_dice_4.mp4
 10,vrt_reds,1.430316206668043,4k_dice_4.mp4
-11,real_blur,0.0,4k_dice_4.mp4
+11,real_blur,0.46372383843571907,4k_dice_4.mp4
 0,deblurgan_inception,4.959479633789167,4k_falling_4.mp4
 1,deeprft_gopro,2.033266480799433,4k_falling_4.mp4
 2,deeprft_reds,2.0789920168194245,4k_falling_4.mp4
@@ -154,7 +154,7 @@
 8,restormer_local,0.6623719110969568,4k_falling_4.mp4
 9,vrt_gopro,5.183175357574912,4k_falling_4.mp4
 10,vrt_reds,3.3450410881114414,4k_falling_4.mp4
-11,real_blur,0.0,4k_falling_4.mp4
+11,real_blur,0.5437753937476605,4k_falling_4.mp4
 0,deblurgan_inception,2.0947145178931144,4k_dolphin_4.mp4
 1,deeprft_gopro,1.3795547347911739,4k_dolphin_4.mp4
 2,deeprft_reds,0.6356026166210619,4k_dolphin_4.mp4
@@ -166,7 +166,7 @@
 8,restormer_local,0.6832593689859865,4k_dolphin_4.mp4
 9,vrt_gopro,4.278009896919134,4k_dolphin_4.mp4
 10,vrt_reds,3.1740903557320297,4k_dolphin_4.mp4
-11,real_blur,0.0,4k_dolphin_4.mp4
+11,real_blur,0.6356026166210619,4k_dolphin_4.mp4
 0,deblurgan_inception,1.2933888749715514,4k_hlullaby_3.mp4
 1,deeprft_gopro,1.081407594868396,4k_hlullaby_3.mp4
 2,deeprft_reds,0.5912600389384524,4k_hlullaby_3.mp4
@@ -178,7 +178,7 @@
 8,restormer_local,1.0932096656223094,4k_hlullaby_3.mp4
 9,vrt_gopro,2.9668554598701276,4k_hlullaby_3.mp4
 10,vrt_reds,2.899029105820035,4k_hlullaby_3.mp4
-11,real_blur,0.0,4k_hlullaby_3.mp4
+11,real_blur,0.5912600389384524,4k_hlullaby_3.mp4
 0,deblurgan_inception,1.742127580377077,4k_astro_7.mp4
 1,deeprft_gopro,1.7048512798510242,4k_astro_7.mp4
 2,deeprft_reds,0.7401189371032942,4k_astro_7.mp4
@@ -190,7 +190,7 @@
 8,restormer_local,0.7768233170256487,4k_astro_7.mp4
 9,vrt_gopro,3.612984930805018,4k_astro_7.mp4
 10,vrt_reds,3.52151847718286,4k_astro_7.mp4
-11,real_blur,0.0,4k_astro_7.mp4
+11,real_blur,0.6410041554160334,4k_astro_7.mp4
 0,deblurgan_inception,0.7097968675761818,4k_shuttle_6.mp4
 1,deeprft_gopro,1.131452755642742,4k_shuttle_6.mp4
 2,deeprft_reds,0.8103004540420846,4k_shuttle_6.mp4
@@ -202,7 +202,7 @@
 8,restormer_local,0.5988529348782667,4k_shuttle_6.mp4
 9,vrt_gopro,3.3061627133714793,4k_shuttle_6.mp4
 10,vrt_reds,2.4980824890211815,4k_shuttle_6.mp4
-11,real_blur,0.0,4k_shuttle_6.mp4
+11,real_blur,0.4988529348782667,4k_shuttle_6.mp4
 0,deblurgan_inception,3.733897757844828,4k_naturemort_3.mp4
 1,deeprft_gopro,1.624630228784759,4k_naturemort_3.mp4
 2,deeprft_reds,1.6453366481646112,4k_naturemort_3.mp4
@@ -214,7 +214,7 @@
 8,restormer_local,0.966643277686895,4k_naturemort_3.mp4
 9,vrt_gopro,4.649830539946391,4k_naturemort_3.mp4
 10,vrt_reds,1.9066154728580207,4k_naturemort_3.mp4
-11,real_blur,0.0,4k_naturemort_3.mp4
+11,real_blur,0.45453047981318473,4k_naturemort_3.mp4
 0,deblurgan_inception,0.9063619679868173,4k_knots_4.mp4
 1,deeprft_gopro,1.2504279245366816,4k_knots_4.mp4
 2,deeprft_reds,0.5961929025468561,4k_knots_4.mp4
@@ -226,7 +226,7 @@
 8,restormer_local,1.0583097762850109,4k_knots_4.mp4
 9,vrt_gopro,2.0277646956853834,4k_knots_4.mp4
 10,vrt_reds,2.0916903059538807,4k_knots_4.mp4
-11,real_blur,0.0,4k_knots_4.mp4
+11,real_blur,0.6961929025468561,4k_knots_4.mp4
 0,deblurgan_inception,2.2030371302950904,4k_martian_3.mp4
 1,deeprft_gopro,0.994777200093115,4k_martian_3.mp4
 2,deeprft_reds,1.2450739528184518,4k_martian_3.mp4
@@ -238,4 +238,4 @@
 8,restormer_local,0.6401002261825326,4k_martian_3.mp4
 9,vrt_gopro,3.220179390601256,4k_martian_3.mp4
 10,vrt_reds,2.866915493032648,4k_martian_3.mp4
-11,real_blur,0.0,4k_martian_3.mp4
+11,real_blur,0.6401002261825326,4k_martian_3.mp4
