@@ -81,7 +81,7 @@ components = [
     reblur_calc,
     optical_calc,
     fft_calc,
-    # fft_lowfreq,
+    fft_lowfreq,
     laplac_calc,
     color_calc,
     # size_calc
