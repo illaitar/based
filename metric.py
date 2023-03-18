@@ -274,7 +274,7 @@ def fft_lowfreq(im1, im2):
 
 
 def laplac(im1):
-    return cv2.Laplacian(im1, cv2.CV_64F)
+    return cv2.Laplacian(im1, cv2.CV_64F, ksize=3)
 
 
 def laplac_calc(im1, im2):
