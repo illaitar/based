@@ -38,7 +38,7 @@ def test_metric(metric):
     for video in tqdm(videos):
         for method in methods:
             target = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, method + ".png"))
-            reference = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, blur_method))
+            reference = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, "real_blur.png"))
             results[video][method] = metric(target, reference)
 
     return results
@@ -47,7 +47,7 @@ def test_metric(metric):
 def test_single(args):
     video, method, metric = args
     target = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, method + ".png"))
-    reference = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, blur_method))
+    reference = cv2.imread(os.path.join(f"crops_{eval_dataset}", video, "real_blur.png"))
     value = metric(target, reference)
     return video, method, value
 
@@ -137,7 +137,6 @@ if __name__ == "__main__":
         "based",
         "rsblur"
     ]:
-        blur_method = "restormer.png" if eval_dataset == "based" else "real_blur.png"
         subjective_table = f"{eval_dataset}.csv"
 
         videos = sorted(os.listdir(f"crops_{eval_dataset}"))

@@ -25,7 +25,7 @@ def prepare_dataset(components):
     data = []
     for record in tqdm(subj.itertuples(), total=len(subj)):
         img1 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, f"{record.method}.png"))
-        img2 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, f"{blur_method}.png"))
+        img2 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, "real_blur.png"))
 
         values = {"result": record.value}
         for component in components:
@@ -90,7 +90,6 @@ components = [
 
 if __name__ == "__main__":
     eval_dataset = "based"
-    blur_method = "restormer" if eval_dataset == "based" else "real_blur"
 
     prepare_dataset(components)
 
