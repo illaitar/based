@@ -117,7 +117,7 @@ def hog_calc(im1, im2):
 def lbp(image):
     edges = np.rint(sobel(image)).astype(np.uint8)
     gray = cv2.cvtColor(edges, cv2.COLOR_BGR2GRAY)
-    patterns = skimage.feature.local_binary_pattern(gray, P=4, R=8)
+    patterns = skimage.feature.local_binary_pattern(gray, P=4, R=8, method='uniform')
 
     return patterns
 
