@@ -95,7 +95,7 @@ def sobel_calc(im1, im2):
     return np.linalg.norm(edge_1 - edge_2)
 
 
-hog = cv2.HOGDescriptor()
+hog = cv2.HOGDescriptor((64,64), (16,16), (8,8), (4,4), _nbins= 13, _derivAperture =1, _gammaCorrection=True, _L2HysThreshold=0.1)
 
 
 def hog_calc(im1, im2):
