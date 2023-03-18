@@ -83,6 +83,12 @@ def sobel_calc(im1, im2):
     * SSIM instead of norm decreases quality (-0.12)
     """
 
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+
+    im1 = cv2.equalizeHist(im1)
+    im2 = cv2.equalizeHist(im2)
+
     edge_1 = sobel(im1)
     edge_2 = sobel(im2)
 
@@ -223,7 +229,7 @@ def fft(image, size=35):
     fftShift[cY - size:cY + size, cX - size:cX + size] = 0
     fftShift = np.fft.ifftshift(fftShift)
     recon = np.fft.ifft2(fftShift)
-    magnitude = 20 * np.log(np.abs(recon))
+    magnitude = np.log(np.abs(recon))
     return magnitude
 
 
@@ -231,6 +237,7 @@ def fft_calc(im1, im2):
 
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
 
     freqs = [30]
 
@@ -261,6 +268,8 @@ def fft_lowfreq(im1, im2):
 
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
+
 
     freqs = [30]
 
