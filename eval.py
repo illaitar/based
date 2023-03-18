@@ -154,9 +154,9 @@ if __name__ == "__main__":
             # haff_calc,
             # sobel_calc,
             # hog_calc,
-            lbp_calc,
+            # lbp_calc,
             # gabor_calc,
-            # ssim_calc,
+            ssim_calc,
             # regression,
             # lpips_calc,
             # color_calc

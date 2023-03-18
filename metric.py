@@ -39,7 +39,14 @@ def lpips_calc(img1, img2):
 
 
 def ssim_calc(im1, im2):
-    return ssim(im1, im2, channel_axis=2)
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2YUV)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2YUV)
+    Y1, U1, V1 = [im1[...,i] for i in range(3)]
+    Y2, U2, V2 = [im2[...,i] for i in range(3)]
+    Y = ssim(Y1, Y2)
+    U = ssim(U1, U2)
+    V = ssim(V1, V2)
+    return Y * 6 + U + V
 
 
 def gabor(image):
