@@ -289,7 +289,7 @@ def laplac_calc(im1, im2):
 
 
 def color(im):
-    im = cv2.cvtColor(im, cv2.COLOR_BGR2YUV)
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 	# split the image into its respective RGB components
     (B, G, R) = cv2.split(im.astype("float"))
 	# compute rg = R - G
