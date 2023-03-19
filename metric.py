@@ -24,7 +24,8 @@ __all__ = [
     "tenengrad_calc",
     "lapm_calc",
     "laple_calc",
-    "haar_calc"
+    "haar_calc",
+    "log_calc"
 ]
 
 
@@ -55,18 +56,11 @@ def ssim_calc(im1, im2):
 
 
 def gabor(image):
-    res = []
-    for theta in range(4):
-        theta = theta / 4. * np.pi
-        for sigma in (1, 3):
-            for frequency in (0.05, 0.15, 0.25):
-                real, _ = skimage.filters.gabor(
-                    image, frequency=frequency, theta=theta, sigma_x=sigma, sigma_y=sigma, mode="wrap"
-                )
-                res.append(cv2.meanStdDev(real))
+    real, _ = skimage.filters.gabor(
+          image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
+      )
 
-
-    return np.array(res)
+    return np.array(cv2.meanStdDev(real))
 
 
 def gabor_calc(im1, im2):
@@ -563,4 +557,23 @@ def haar_calc(im1, im2):
     h_1 = haar(im1, 15)
     h_2 = haar(im2, 15)
 
-    return np.linalg.norm(h_1 - h_2)
+
+    return -np.linalg.norm(h_1[0] - h_2[0])
+
+
+def log(im):
+    blur = cv2.GaussianBlur(im,(5,5),0)
+
+    # Apply Laplacian operator in some higher datatype
+    laplacian = cv2.Laplacian(blur,cv2.CV_64F, ksize=7)
+    return laplacian
+
+def log_calc(im1, im2):
+    # laplacian of gaussian
+    # im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2YUV)
+    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2YUV)
+
+    l1 = log(im1)
+    l2 = log(im2)
+
+    return np.linalg.norm(l1-l2)

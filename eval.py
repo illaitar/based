@@ -155,7 +155,7 @@ if __name__ == "__main__":
             # sobel_calc,
             # hog_calc,
             # lbp_calc,
-            gabor_calc,
+            # gabor_calc,
             # ssim_calc,
             # regression,
             # haar_calc,
@@ -163,7 +163,8 @@ if __name__ == "__main__":
             # color_calc
             # tenengrad_calc,
             # lapm_calc,
-            # laple_calc
+            # laple_calc,
+            log_calc
         ]:
             tic = time.time()
             v = test_metric_mp(component)

@@ -78,7 +78,7 @@ components = [
     # lpips_calc,
     ssim_calc,
     gabor_calc,
-    sobel_calc,
+    # sobel_calc,
     hog_calc,
     # lbp_calc,
     haff_calc,
@@ -88,8 +88,8 @@ components = [
     # fft_lowfreq,
     laplac_calc,
     color_calc,
-    haar_calc,
-    # tenengrad_calc,
+    # haar_calc,
+    tenengrad_calc,
     # lapm_calc,
 ]
 
@@ -106,18 +106,18 @@ if __name__ == "__main__":
     eval_dataset = "based"
     train(f"dataset_{eval_dataset}.csv", components)
 
-if __name__ == "__main__":
-     # prepare_dataset(comps)
-     data_rsblur = pd.read_csv(f"dataset_rsblur.csv", index_col=0)
-     data_based = pd.read_csv(f"dataset_based.csv", index_col=0)
+# if __name__ == "__main__":
+#      # prepare_dataset(comps)
+#      data_rsblur = pd.read_csv(f"dataset_rsblur.csv", index_col=0)
+#      data_based = pd.read_csv(f"dataset_based.csv", index_col=0)
 
-     for column in data_based.columns.drop("result"):
-         points_rsblur = data_rsblur.groupby(column).result.mean().to_frame().reset_index()
-         points_based = data_based.groupby(column).result.mean().to_frame().reset_index()
-         points = pd.concat([points_rsblur.assign(dataset="rsblur"), points_based.assign(dataset="based")])
-         points[column] = MinMaxScaler().fit_transform(np.array(points[column]).reshape(-1, 1))
-         sns.jointplot(x=column, y="result", data=points, hue="dataset", alpha=0.5)
-         plt.show()
+#      for column in data_based.columns.drop("result"):
+#          points_rsblur = data_rsblur.groupby(column).result.mean().to_frame().reset_index()
+#          points_based = data_based.groupby(column).result.mean().to_frame().reset_index()
+#          points = pd.concat([points_rsblur.assign(dataset="rsblur"), points_based.assign(dataset="based")])
+#          points[column] = MinMaxScaler().fit_transform(np.array(points[column]).reshape(-1, 1))
+#          sns.jointplot(x=column, y="result", data=points, hue="dataset", alpha=0.5)
+#          plt.show()
 
 # if __name__ == "__main__":
 #     data_based = pd.read_csv("dataset_based.csv", index_col=0)
