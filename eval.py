@@ -155,10 +155,10 @@ if __name__ == "__main__":
             # sobel_calc,
             # hog_calc,
             # lbp_calc,
-            # gabor_calc,
+            gabor_calc,
             # ssim_calc,
             # regression,
-            haar_calc,
+            # haar_calc,
             # lpips_calc,
             # color_calc
             # tenengrad_calc,

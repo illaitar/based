@@ -55,11 +55,18 @@ def ssim_calc(im1, im2):
 
 
 def gabor(image):
-    real, _ = skimage.filters.gabor(
-        image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
-    )
+    res = []
+    for theta in range(4):
+        theta = theta / 4. * np.pi
+        for sigma in (1, 3):
+            for frequency in (0.05, 0.15, 0.25):
+                real, _ = skimage.filters.gabor(
+                    image, frequency=frequency, theta=theta, sigma_x=sigma, sigma_y=sigma, mode="wrap"
+                )
+                res.append(cv2.meanStdDev(real))
 
-    return np.array(cv2.meanStdDev(real))
+
+    return np.array(res)
 
 
 def gabor_calc(im1, im2):
