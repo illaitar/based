@@ -4,6 +4,7 @@ import skimage
 from skimage.metrics import structural_similarity as ssim
 import lpips as lpips_base
 import torchvision.transforms as transforms
+import pywt
 
 
 __all__ = [
@@ -19,7 +20,11 @@ __all__ = [
     "fft_calc",
     "fft_lowfreq",
     "laplac_calc",
-    "color_calc"
+    "color_calc",
+    "tenengrad_calc",
+    "lapm_calc",
+    "laple_calc",
+    "haar_calc"
 ]
 
 
@@ -248,7 +253,6 @@ def fft_calc(im1, im2):
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
-
     freqs = [30]
 
     sum_ = 0
@@ -278,8 +282,6 @@ def fft_lowfreq(im1, im2):
 
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
-
-
 
     freqs = [30]
 
@@ -331,3 +333,79 @@ def color_calc(im1, im2):
     c_2 = color(im2)
 
     return np.abs(c_1 - c_2)
+
+
+def tenengrad(img):
+  sx = cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=5)
+  sy = cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=5)
+  return cv2.magnitude(sx, sy)
+
+
+def tenengrad_calc(im1, im2):
+
+    c_1 = tenengrad(im1)
+    c_2 = tenengrad(im2)
+
+    return np.linalg.norm(c_1 - c_2)
+
+
+def Lx(img):
+  kernelx = np.array([[0, 0, 0], [-1, 2, -1], [0, 0, 0]])
+  return cv2.filter2D(img, cv2.CV_32F, np.array(kernelx))
+
+
+def Ly(img):
+  kernely = kernelx = np.array([[0, -1, 0], [0, 2, 0], [0, -1, 0]])
+  return cv2.filter2D(img, cv2.CV_32F, np.array(kernely))
+
+
+def modified_laplacian(img):
+  return (np.abs(Lx(img)) + np.abs(Ly(img)))
+
+
+def lapm_calc(im1, im2):
+
+    c_1 = modified_laplacian(im1)
+    c_2 = modified_laplacian(im2)
+
+    return np.linalg.norm(c_1 - c_2)
+
+
+def energy_of_laplacian(img):
+    lap = cv2.Laplacian(img, cv2.CV_32F)
+    return np.square(lap)
+
+
+def laple_calc(im1, im2):
+
+    # im1 = cv2.resize(im1, (128, 128))
+    # im2 = cv2.resize(im2, (128, 128))
+
+    lap_1 = energy_of_laplacian(im1)
+    lap_2 = energy_of_laplacian(im2)
+
+    return np.linalg.norm(lap_1 - lap_2)
+
+
+def haar(im1):
+
+    img_f32 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY).astype(np.float32)
+
+    # coeffs = pywt.dwt2(img_f32, 'haar')
+    # cA, (cH, cV, cD) = coeffs
+
+    coeffs2 = pywt.dwt2(img_f32, 'bior1.3')
+    LL, (LH, HL, HH) = coeffs2
+
+    # String each sub -diagram and finally get a picture in the end
+    # AH = np.concatenate([cA, cH], axis=1)
+    # VD = np.concatenate([cV, cD], axis=1)
+    # img = np.concatenate([AH, VD], axis=0)
+    return np.dstack([LL, LH, HL, HH])
+
+
+def haar_calc(im1, im2):
+    h_1 = haar(im1)
+    h_2 = haar(im2)
+
+    return np.linalg.norm(h_1 - h_2)

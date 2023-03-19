@@ -16,8 +16,11 @@ from sklearn.model_selection import cross_val_score
 
 from metric import *
 
-def size_calc(im1, im2):
-    return im1
+def comp1(im1, im2):
+    return np.sum(cv2.Canny(im1, 150, 255))
+
+def comp2(im1, im2):
+    return np.sum(cv2.Canny(im2, 150, 255))
 
 def prepare_dataset(components):
     subj = pd.read_csv(f"subj_{eval_dataset}.csv", index_col=0)
@@ -75,7 +78,7 @@ components = [
     # lpips_calc,
     ssim_calc,
     gabor_calc,
-    sobel_calc,
+    # sobel_calc,
     hog_calc,
     # lbp_calc,
     haff_calc,
@@ -85,7 +88,12 @@ components = [
     # fft_lowfreq,
     laplac_calc,
     color_calc,
-    # size_calc
+    # haar_calc,
+    tenengrad_calc,
+    # lapm_calc
+    # size_calc,
+    # comp1,
+    # сomp2,
 ]
 
 
@@ -101,6 +109,18 @@ if __name__ == "__main__":
 
     train(f"dataset_{eval_dataset}.csv", components)
 
+if __name__ == "__main__":
+     # prepare_dataset(comps)
+     data_rsblur = pd.read_csv(f"dataset_rsblur.csv", index_col=0)
+     data_based = pd.read_csv(f"dataset_based.csv", index_col=0)
+
+     for column in data_based.columns.drop("result"):
+         points_rsblur = data_rsblur.groupby(column).result.mean().to_frame().reset_index()
+         points_based = data_based.groupby(column).result.mean().to_frame().reset_index()
+         points = pd.concat([points_rsblur.assign(dataset="rsblur"), points_based.assign(dataset="based")])
+         points[column] = MinMaxScaler().fit_transform(np.array(points[column]).reshape(-1, 1))
+         sns.jointplot(x=column, y="result", data=points, hue="dataset", alpha=0.5)
+         plt.show()
 
 # if __name__ == "__main__":
 #     data_based = pd.read_csv("dataset_based.csv", index_col=0)
@@ -108,6 +128,6 @@ if __name__ == "__main__":
 #     data_based["video"] = [record.video for record in subj.itertuples()]
 
 #     for column in data_based.columns.drop("result"):
-#         g = sns.scatterplot(x=column, y="result", data=data_based, hue="video", alpha=1)
-#         sns.move_legend(g, "upper left", bbox_to_anchor=(1, 1), title='Blya')
+#         g = sns.jointplot(x=column, y="result", data=data_based, hue="metric", alpha=1)
+#         # sns.move_legend(g, "upper left", bbox_to_anchor=(1, 1), title='Blya')
 #         plt.show()
