@@ -7,6 +7,8 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 from scipy.stats import pearsonr, spearmanr, kendalltau
 
+from data import names
+
 
 def cross_validate(dataset, model, names):
     data = pd.read_csv(dataset)
@@ -45,12 +47,7 @@ if __name__ == "__main__":
             model=Pipeline([
                 ("regressor", RandomForestRegressor(n_estimators=220, random_state=8, criterion="squared_error"))
             ]),
-            names=[
-                "haff_calc",
-                "sobel_calc",
-                "hog_calc",
-                "lbp_calc",
-            ]
+            names=names
         )
 
         print(f"based\t\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")

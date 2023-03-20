@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr, spearmanr, kendalltau, ConstantInputWarning
 
+from data import names
+
 
 warnings.filterwarnings(
     action="ignore",
@@ -13,7 +15,7 @@ warnings.filterwarnings(
 )
 
 
-def evaluate(dataset, method):
+def evaluate(dataset, name):
     data = pd.read_csv(dataset)
     videos = data.video.unique()
 
@@ -22,10 +24,10 @@ def evaluate(dataset, method):
     for video in videos:
         data_test = data[data.video == video]
 
-        stats["PLCC"].append(pearsonr(data_test[method], data_test.value).statistic)
-        stats["SRCC"].append(spearmanr(data_test[method], data_test.value).statistic)
-        stats["KRCC"].append(kendalltau(data_test[method], data_test.value).statistic)
-        stats["RMSE"].append(np.sqrt(np.mean(np.square(data_test[method] - data_test.value))))
+        stats["PLCC"].append(pearsonr(data_test[name], data_test.value).statistic)
+        stats["SRCC"].append(spearmanr(data_test[name], data_test.value).statistic)
+        stats["KRCC"].append(kendalltau(data_test[name], data_test.value).statistic)
+        stats["RMSE"].append(np.sqrt(np.mean(np.square(data_test[name] - data_test.value))))
 
     return {
         name: np.abs(np.mean([0 if math.isnan(x) else x for x in stat]))
@@ -41,15 +43,10 @@ if __name__ == "__main__":
         print("Dataset:", dataset)
         print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
 
-        for method in [
-            "haff_calc",
-            "sobel_calc",
-            "hog_calc",
-            "lbp_calc"
-        ]:
+        for name in names:
             stats = evaluate(
                 dataset=dataset,
-                method=method
+                name=name
             )
 
-            print(f"{method}\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")
+            print(f"{name}\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")

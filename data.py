@@ -24,18 +24,24 @@ def prepare_row(record):
     return record
 
 
+components = [
+    haff_calc,
+    sobel_calc,
+    hog_calc,
+    lbp_calc,
+]
+
+names = [
+    component.__name__
+    for component in components
+]
+
+
 if __name__ == "__main__":
     for dataset in [
         "based",
         "rsblur"
     ]:
-        components = [
-            haff_calc,
-            sobel_calc,
-            hog_calc,
-            lbp_calc,
-        ]
-
         subj = pd.read_csv(f"subj_{dataset}.csv", index_col=0)
 
         with Pool(8) as pool:
