@@ -78,27 +78,27 @@ def regression(img1, img2):
 
 components = [
     laplac_calc,
-    fft_calc,
+    # fft_calc,
     optical_calc,
     reblur_calc,
     haff_calc,
     sobel_calc,
     hog_calc,
-    lbp_calc,
+    # lbp_calc,
     gabor_calc,
     ssim_calc,
     # regression,
-    haar_calc,
-    lpips_calc,
+    # haar_calc,
+    # lpips_calc,
     color_calc,
-    tenengrad_calc,
-    lapm_calc,
-    laple_calc,
-    log_calc,
-    sharr_calc,
-    clache_calc,
-    hist_cmp,
-    saliency_calc
+    # tenengrad_calc,
+    # lapm_calc,
+    # laple_calc,
+    # log_calc,
+    # sharr_calc,
+    # clache_calc,
+    # hist_cmp,
+    # saliency_calc
 ]
 
 
@@ -107,9 +107,9 @@ if __name__ == "__main__":
 
     # prepare_dataset(components)
 
-    eval_dataset = "based"
+    # eval_dataset = "based"
 
-    prepare_dataset(components)
+    # prepare_dataset(components)
 
     eval_dataset = "based"
     train(f"dataset_{eval_dataset}.csv", components)
