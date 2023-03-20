@@ -346,15 +346,6 @@ def tenengrad(img):
 
 def tenengrad_calc(im1, im2):
 
-    # im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
-
-    # im1 = cv2.resize(im1, (256, 256))
-    # im2 = cv2.resize(im2, (256, 256))
-
-    # im1 = cv2.equalizeHist(im1)
-    # im2 = cv2.equalizeHist(im2)
-
     c_1 = tenengrad(im1)
     c_2 = tenengrad(im2)
 
@@ -559,8 +550,7 @@ def haar_calc(im1, im2):
     h_1 = haar(im1, 15)
     h_2 = haar(im2, 15)
 
-
-    return -np.linalg.norm(h_1[0] - h_2[0])
+    return np.linalg.norm(h_1 - h_2)
 
 
 def log(im):
