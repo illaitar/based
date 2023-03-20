@@ -158,7 +158,7 @@ if __name__ == "__main__":
             # lbp_calc,
             # gabor_calc,
             # ssim_calc,
-            # regression,
+            regression,
             # haar_calc,
             # lpips_calc,
             # color_calc
@@ -169,7 +169,7 @@ if __name__ == "__main__":
             # sharr_calc,
             # clache_calc,
             # hist_cmp,
-            saliency_calc
+            # saliency_calc
         ]:
             tic = time.time()
             v = test_metric_mp(component)

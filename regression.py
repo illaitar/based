@@ -27,8 +27,8 @@ def prepare_dataset(components):
 
     data = []
     for record in tqdm(subj.itertuples(), total=len(subj)):
-        if (record.method == "real_blur"):
-            continue
+        # if (record.method == "real_blur"):
+        #     continue
         img1 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, f"{record.method}.png"))
         img2 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, "real_blur.png"))
 
@@ -77,22 +77,28 @@ def regression(img1, img2):
 
 
 components = [
-    # lpips_calc,
-    ssim_calc,
-    gabor_calc,
+    laplac_calc,
+    fft_calc,
+    optical_calc,
+    reblur_calc,
+    haff_calc,
     sobel_calc,
     hog_calc,
-    # lbp_calc,
-    haff_calc,
-    reblur_calc,
-    optical_calc,
-    # fft_calc,
-    # fft_lowfreq,
-    laplac_calc,
+    lbp_calc,
+    gabor_calc,
+    ssim_calc,
+    # regression,
+    haar_calc,
+    lpips_calc,
     color_calc,
-    # haar_calc,
-    # tenengrad_calc,
-    # lapm_calc,
+    tenengrad_calc,
+    lapm_calc,
+    laple_calc,
+    log_calc,
+    sharr_calc,
+    clache_calc,
+    hist_cmp,
+    saliency_calc
 ]
 
 

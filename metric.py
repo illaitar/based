@@ -61,15 +61,14 @@ def ssim_calc(im1, im2):
 
 def gabor(image):
     real, _ = skimage.filters.gabor(
-          image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
-      )
+        image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
+    )
 
     return np.array(cv2.meanStdDev(real))
 
 
 def gabor_calc(im1, im2):
     """ktau=0.71
-
     * x4 Downsample does not change quality (-0.006)
     * frequencies (0.05, 0.10, 0.15) to 0.10 decreases quality (-0.02)
     """
@@ -92,7 +91,6 @@ def sobel(image):
 
 def sobel_calc(im1, im2):
     """Calculates norm of image edge difference
-
     * Large kernel size increases quality (+0.05)
     * Grayscale conversion descreases quality (-0.02)
     * Histogram of edges descreases quality (-0.04)
@@ -117,7 +115,6 @@ hog = cv2.HOGDescriptor((64,64), (16,16), (8,8), (4,4), _nbins= 13, _derivApertu
 
 def hog_calc(im1, im2):
     """Calculates norm of image hog descriptors difference
-
     * Grayscale conversion increases quality (+0.05)
     * x4 Downsample increases quality (+0.04)
     """
@@ -144,7 +141,6 @@ def lbp(image):
 
 def lbp_calc(im1, im2):
     """Calculates norm of image lbp descriptors difference
-
     * P and R tuning increases quality (+0.11)
     * Edge detectcion increases quality (+0.09)
     * Histogram calculation decreases quality (-0.06)
@@ -169,7 +165,6 @@ def haff(img):
 
 def haff_calc(im1, im2):
     """Calculates norm of image lines difference
-
     * Canny threshold tuning increases quality
     * Line thickness increases quality
     """
@@ -177,7 +172,7 @@ def haff_calc(im1, im2):
     haff_1 = haff(im1)
     haff_2 = haff(im2)
 
-    return -np.linalg.norm(haff_1 - haff_2)
+    return np.linalg.norm(haff_1 - haff_2)
 
 
 def sobel_sd(img):
@@ -222,7 +217,7 @@ def reblur_calc(im1, im2):
     reblur_1 = reblur(im1)
     reblur_2 = reblur(im2)
 
-    return -np.abs(reblur_1 - reblur_2)
+    return np.abs(reblur_1 - reblur_2)
 
 
 def optical_calc(im1, im2):
@@ -238,7 +233,7 @@ def optical_calc(im1, im2):
     mid = flow2[:,:,1]
     # mid = np.sqrt(np.square(flow[:,:,0]) + np.square(flow[:,:,1]))
 
-    return -np.var(mid)
+    return np.var(mid)
 
 
 def fft(image, size=35):
@@ -257,6 +252,7 @@ def fft_calc(im1, im2):
 
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
 
     freqs = [30]
 
@@ -287,6 +283,8 @@ def fft_lowfreq(im1, im2):
 
     im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
     im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+
+
 
     freqs = [30]
 
@@ -337,7 +335,7 @@ def color_calc(im1, im2):
     c_1 = color(im1)
     c_2 = color(im2)
 
-    return -np.abs(c_1 - c_2)
+    return np.abs(c_1 - c_2)
 
 
 def tenengrad(img):
