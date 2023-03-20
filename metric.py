@@ -25,7 +25,10 @@ __all__ = [
     "lapm_calc",
     "laple_calc",
     "haar_calc",
-    "log_calc"
+    "log_calc",
+    "sharr_calc",
+    "clache_calc",
+    "hist_cmp"
 ]
 
 
@@ -173,7 +176,7 @@ def haff_calc(im1, im2):
     haff_1 = haff(im1)
     haff_2 = haff(im2)
 
-    return np.linalg.norm(haff_1 - haff_2)
+    return -np.linalg.norm(haff_1 - haff_2)
 
 
 def sobel_sd(img):
@@ -218,7 +221,7 @@ def reblur_calc(im1, im2):
     reblur_1 = reblur(im1)
     reblur_2 = reblur(im2)
 
-    return np.abs(reblur_1 - reblur_2)
+    return -np.abs(reblur_1 - reblur_2)
 
 
 def optical_calc(im1, im2):
@@ -234,7 +237,7 @@ def optical_calc(im1, im2):
     mid = flow2[:,:,1]
     # mid = np.sqrt(np.square(flow[:,:,0]) + np.square(flow[:,:,1]))
 
-    return np.var(mid)
+    return -np.var(mid)
 
 
 def fft(image, size=35):
@@ -333,7 +336,7 @@ def color_calc(im1, im2):
     c_1 = color(im1)
     c_2 = color(im2)
 
-    return np.abs(c_1 - c_2)
+    return -np.abs(c_1 - c_2)
 
 
 def tenengrad(img):
@@ -577,3 +580,49 @@ def log_calc(im1, im2):
     l2 = log(im2)
 
     return np.linalg.norm(l1-l2)
+
+
+
+def scharr(img):
+  sx = cv2.Scharr(img, cv2.CV_32F, 1, 0)
+  sy = cv2.Scharr(img, cv2.CV_32F, 0, 1)
+  return cv2.magnitude(sx, sy)
+
+
+def sharr_calc(im1, im2):
+    c_1 = scharr(im1)
+    c_2 = scharr(im2)
+
+    return np.linalg.norm(c_1 - c_2)
+
+
+def clache(im1):
+    image_bw = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+
+    # The declaration of CLAHE
+    # clipLimit -> Threshold for contrast limiting
+    clahe = cv2.createCLAHE(clipLimit = 5)
+    final_img = clahe.apply(image_bw) + 30
+
+    return final_img
+
+def clache_calc(im1, im2):
+
+    c1= clache(im1)
+    c2= clache(im2)
+    return ssim(c1, c2)
+
+
+def hist_cmp(im1, im2):
+    img1_hsv = cv2.cvtColor(im1, cv2.COLOR_BGR2HSV)
+    img2_hsv = cv2.cvtColor(im2, cv2.COLOR_BGR2HSV)
+
+    hist_img1 = cv2.calcHist([img1_hsv], [0,1], None, [180,256], [0,180,0,256])
+    cv2.normalize(hist_img1, hist_img1, alpha=0.1, beta=1, norm_type=cv2.NORM_MINMAX);
+    hist_img2 = cv2.calcHist([img2_hsv], [0,1], None, [180,256], [0,180,0,256])
+    cv2.normalize(hist_img2, hist_img2, alpha=0.1, beta=1, norm_type=cv2.NORM_MINMAX);
+
+    # find the metric value
+    metric_val = cv2.compareHist(hist_img1, hist_img2, cv2.HISTCMP_BHATTACHARYYA)
+    # metric_val =  cv2.EMD(hist_img1, hist_img2, cv2.DIST_L2)[0]
+    return metric_val

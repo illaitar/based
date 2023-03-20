@@ -134,8 +134,9 @@ def metrics_correlations_all(results, metrics):
 
 if __name__ == "__main__":
     for eval_dataset in [
+        "rsblur",
         "based",
-        "rsblur"
+
     ]:
         subjective_table = f"{eval_dataset}.csv"
 
@@ -164,7 +165,10 @@ if __name__ == "__main__":
             # tenengrad_calc,
             # lapm_calc,
             # laple_calc,
-            log_calc
+            # log_calc,
+            # sharr_calc,
+            # clache_calc,
+            hist_cmp
         ]:
             tic = time.time()
             v = test_metric_mp(component)

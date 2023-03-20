@@ -27,6 +27,8 @@ def prepare_dataset(components):
 
     data = []
     for record in tqdm(subj.itertuples(), total=len(subj)):
+        if (record.method == "real_blur"):
+            continue
         img1 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, f"{record.method}.png"))
         img2 = cv2.imread(os.path.join(f"crops_{eval_dataset}", record.video, "real_blur.png"))
 
@@ -78,7 +80,7 @@ components = [
     # lpips_calc,
     ssim_calc,
     gabor_calc,
-    # sobel_calc,
+    sobel_calc,
     hog_calc,
     # lbp_calc,
     haff_calc,
@@ -89,7 +91,7 @@ components = [
     laplac_calc,
     color_calc,
     # haar_calc,
-    tenengrad_calc,
+    # tenengrad_calc,
     # lapm_calc,
 ]
 
@@ -99,9 +101,9 @@ if __name__ == "__main__":
 
     # prepare_dataset(components)
 
-    # eval_dataset = "based"
+    eval_dataset = "based"
 
-    # prepare_dataset(components)
+    prepare_dataset(components)
 
     eval_dataset = "based"
     train(f"dataset_{eval_dataset}.csv", components)
