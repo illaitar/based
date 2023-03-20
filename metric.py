@@ -28,7 +28,8 @@ __all__ = [
     "log_calc",
     "sharr_calc",
     "clache_calc",
-    "hist_cmp"
+    "hist_cmp",
+    "saliency_calc"
 ]
 
 
@@ -626,3 +627,19 @@ def hist_cmp(im1, im2):
     metric_val = cv2.compareHist(hist_img1, hist_img2, cv2.HISTCMP_BHATTACHARYYA)
     # metric_val =  cv2.EMD(hist_img1, hist_img2, cv2.DIST_L2)[0]
     return metric_val
+
+
+def saliency(im):
+    # saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
+    # (success, saliencyMap) = saliency.computeSaliency(im)
+    # saliencyMap = (saliencyMap * 255).astype("uint8")
+
+    saliency = cv2.saliency.StaticSaliencyFineGrained_create()
+    (success, saliencyMap) = saliency.computeSaliency(im)
+
+    return saliencyMap
+
+def saliency_calc(im1, im2):
+    s1 = saliency(im1)
+    s2 = saliency(im2)
+    return np.linalg.norm(s1 - s2)

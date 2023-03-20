@@ -168,7 +168,8 @@ if __name__ == "__main__":
             # log_calc,
             # sharr_calc,
             # clache_calc,
-            hist_cmp
+            # hist_cmp,
+            saliency_calc
         ]:
             tic = time.time()
             v = test_metric_mp(component)
