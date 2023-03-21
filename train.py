@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import KFold
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from scipy.stats import pearsonr, spearmanr, kendalltau
 
 from data import names

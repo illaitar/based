@@ -38,7 +38,7 @@ components = [
     ssim_calc,
     # regression,
     haar_calc,
-    lpips_calc,
+    # lpips_calc,
     color_calc,
     tenengrad_calc,
     lapm_calc,
@@ -48,16 +48,17 @@ components = [
     # # clache_calc,
     hist_cmp,
     saliency_calc,
-    fft2_calc,
+
+
+    # fft2_calc,
+
+
+
     # ssim_blurriness_metric,
     # vif_blurriness_metric,
     # vollath_blurriness_metric
     # wavelet_blurriness_metric,
     # fft3
-    # deblur_compare,
-    # HoughKLD,
-    # HoughJSD,
-    # HoughH2
 ]
 
 names = [

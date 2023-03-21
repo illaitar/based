@@ -6,7 +6,6 @@ import lpips as lpips_base
 import torchvision.transforms as transforms
 import torch
 import pywt
-from piq import vif_p
 
 
 __all__ = [
@@ -33,10 +32,6 @@ __all__ = [
     "hist_cmp",
     "saliency_calc",
     "fft2_calc",
-    "fft_calc_m",
-    "HoughKLD",
-    "HoughJSD",
-    "HoughH2"
 ]
 
 
@@ -61,17 +56,17 @@ def ssim_calc(im1, im2):
     Y1, U1, V1 = [im1[...,i] for i in range(3)]
     Y2, U2, V2 = [im2[...,i] for i in range(3)]
     Y = ssim(Y1, Y2)
-    # U = ssim(U1, U2)
-    # V = ssim(V1, V2)
-    return Y #* 6 + U + V
+    U = ssim(U1, U2)
+    V = ssim(V1, V2)
+    return Y * 6 + U + V
 
 
 def gabor(image):
-    real, imm = skimage.filters.gabor(
+    real, _ = skimage.filters.gabor(
         image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
     )
 
-    return np.array([real, imm])
+    return np.array(cv2.meanStdDev(real))
 
 
 def gabor_calc(im1, im2):
@@ -270,14 +265,6 @@ def fft_calc(im1, im2):
         sum_ += np.linalg.norm(fft_1 - fft_2)
 
     return sum_
-
-def fft_calc_m(im1, freq = 10):
-
-    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
-
-    fft_1 = fft(im1, freq)
-
-    return np.var(fft_1)
 
 
 def fft_lfq(image, size=35):
@@ -633,156 +620,48 @@ def hist_cmp(im1, im2):
 
 
 def saliency(im):
-    # saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
-    # (success, saliencyMap) = saliency.computeSaliency(im)
-    # saliencyMap = (saliencyMap * 255).astype("uint8")
-
-    saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
+    saliency = cv2.saliency.StaticSaliencyFineGrained_create()
     (success, saliencyMap) = saliency.computeSaliency(im)
-
     return saliencyMap
 
+
 def saliency_calc(im1, im2):
-    s1 = saliency(im1)
-    s2 = saliency(im2)
-    return np.linalg.norm(s1 - s2)
+    A = saliency(im1)
+    B = saliency(im2)
+    return np.linalg.norm(A-B)
 
+from scipy.spatial.distance import chebyshev
 
-def compute_saliency_map(image):
-    saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
-    _, saliency_map = saliency.computeSaliency(image)
-    return saliency_map
-
-
-def fft2_calc(image1, image2):
-    # Read the images
+def fft2_calc(image1, image2, r = 15 ):
     image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
     image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
-
-
-    # Calculate the 2D FFT of the images
     fft1 = np.fft.fft2(image1)
     fft2 = np.fft.fft2(image2)
-
-    # Shift the zero-frequency component to the center of the spectrum
     fshift1 = np.fft.fftshift(fft1)
     fshift2 = np.fft.fftshift(fft2)
-
-    # Calculate the magnitude spectrum
     magnitude_spectrum1 = np.abs(fshift1)
     magnitude_spectrum2 = np.abs(fshift2)
-
-    # Define a high-pass filter
     rows, cols = image1.shape
     crow, ccol = rows // 2, cols // 2
-
-
-
-    r = 15  # Filter size
     mask = np.ones((rows, cols), dtype=np.uint8)
     cv2.circle(mask, (ccol, crow), r, 0, -1)
-    # mask[crow - r:crow + r, ccol - r:ccol + r] = 0
+    A = mask * magnitude_spectrum1
+    B = mask * magnitude_spectrum2
 
-    # Apply the high-pass filter to the magnitude spectrum
-    filtered_spectrum1 = mask * magnitude_spectrum1
-    filtered_spectrum2 = mask * magnitude_spectrum2
-
-    # Calculate the sum of the high-frequency components
-    high_frequency_sum1 = np.sum(filtered_spectrum1)
-    high_frequency_sum2 = np.sum(filtered_spectrum2)
-
-    # Calculate the detail preservation score
-    detail_preservation_score = np.linalg.norm(filtered_spectrum1 - filtered_spectrum2)#high_frequency_sum1 / high_frequency_sum2
-
+    # # L1
+    detail_preservation_score = np.sum(np.abs(A - B))
+    # # L2
+    # detail_preservation_score = np.sqrt(np.sum(np.square(A - B)))
+    # # max
+    # detail_preservation_score = np.max(np.abs(A - B))
+    # mahanobis
+    # covariance = np.cov(A, B)
+    # covariance_inv = np.linalg.inv(covariance)
+    # mean_diff = A.mean(axis=0) - B.mean(axis=0)
+    # detail_preservation_score = np.sqrt(np.dot(np.dot(mean_diff.T, covariance_inv), mean_diff))
+    # # canberra
+    # detail_preservation_score = np.sum(np.abs(A - B) / (np.abs(A) + np.abs(B)))
+    # #bray-curtis
+    # detail_preservation_score = np.sum(np.abs(A - B)) / np.sum(np.abs(A + B))
+    detail_preservation_score = np.linalg.norm(A - B)
     return detail_preservation_score
-
-
-import cv2
-import torch
-import PIL
-import math
-import numpy as np
-import skimage
-from skimage.transform import hough_line
-import matplotlib.pyplot as plt
-import sys
-
-def HoughKLD(orig_gray, compr_gray):
-    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
-    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
-    def sobel_grad(gray):
-        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
-        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
-        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
-        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
-        return grad_sobel
-
-    def hough_diag(edges):
-        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
-        h = hough_line(edges, theta=tested_angles)[0]
-        return h
-
-    def KLD(trg, inp):
-        inp = inp / torch.sum(inp)
-        trg = trg / torch.sum(trg)
-        eps = sys.float_info.epsilon
-        return torch.sum(trg*torch.log(eps+torch.div(trg,(inp+eps))))
-
-    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
-    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
-    return KLD(orig_diag, compr_diag).item()
-
-
-def HoughJSD(orig_gray, compr_gray):
-    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
-    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
-    def sobel_grad(gray):
-        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
-        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
-        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
-        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
-        return grad_sobel
-
-    def hough_diag(edges):
-        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
-        h = hough_line(edges, theta=tested_angles)[0]
-        return h
-
-    def KLD(trg, inp):
-        inp = inp / torch.sum(inp)
-        trg = trg / torch.sum(trg)
-        eps = sys.float_info.epsilon
-        return torch.sum(trg*torch.log(eps+torch.div(trg,(inp+eps))))
-
-    def JSD(trg, inp):
-        tmp = (trg + inp) / 2
-        return (KLD(trg, tmp) + KLD(inp, tmp)) / 2
-
-    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
-    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
-    return JSD(orig_diag, compr_diag).item()
-
-
-def HoughH2(orig_gray, compr_gray):
-    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
-    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
-    def sobel_grad(gray):
-        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
-        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
-        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
-        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
-        return grad_sobel
-
-    def hough_diag(edges):
-        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
-        h = hough_line(edges, theta=tested_angles)[0]
-        return h
-
-    def H2(trg, inp):
-        inp = inp / torch.sum(inp)
-        trg = trg / torch.sum(trg)
-        return 2 * torch.sum(((trg) ** 0.5 - (inp)  ** 0.5) ** 2)
-
-    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
-    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
-    return H2(orig_diag, compr_diag).item()
