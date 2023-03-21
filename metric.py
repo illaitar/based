@@ -4,7 +4,9 @@ import skimage
 from skimage.metrics import structural_similarity as ssim
 import lpips as lpips_base
 import torchvision.transforms as transforms
+import torch
 import pywt
+from piq import vif_p
 
 
 __all__ = [
@@ -29,7 +31,8 @@ __all__ = [
     "sharr_calc",
     "clache_calc",
     "hist_cmp",
-    "saliency_calc"
+    "saliency_calc",
+    "fft2_calc"
 ]
 
 
@@ -60,11 +63,11 @@ def ssim_calc(im1, im2):
 
 
 def gabor(image):
-    real, _ = skimage.filters.gabor(
+    real, imm = skimage.filters.gabor(
         image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
     )
 
-    return np.array(cv2.meanStdDev(real))
+    return np.array([real, imm])
 
 
 def gabor_calc(im1, im2):
@@ -631,3 +634,52 @@ def saliency_calc(im1, im2):
     s1 = saliency(im1)
     s2 = saliency(im2)
     return np.linalg.norm(s1 - s2)
+
+
+def compute_saliency_map(image):
+    saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
+    _, saliency_map = saliency.computeSaliency(image)
+    return saliency_map
+
+
+def fft2_calc(image1, image2):
+    # Read the images
+    image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+    image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+
+
+    # Calculate the 2D FFT of the images
+    fft1 = np.fft.fft2(image1)
+    fft2 = np.fft.fft2(image2)
+
+    # Shift the zero-frequency component to the center of the spectrum
+    fshift1 = np.fft.fftshift(fft1)
+    fshift2 = np.fft.fftshift(fft2)
+
+    # Calculate the magnitude spectrum
+    magnitude_spectrum1 = np.abs(fshift1)
+    magnitude_spectrum2 = np.abs(fshift2)
+
+    # Define a high-pass filter
+    rows, cols = image1.shape
+    crow, ccol = rows // 2, cols // 2
+
+
+
+    r = 15  # Filter size
+    mask = np.ones((rows, cols), dtype=np.uint8)
+    cv2.circle(mask, (ccol, crow), r, 0, -1)
+    # mask[crow - r:crow + r, ccol - r:ccol + r] = 0
+
+    # Apply the high-pass filter to the magnitude spectrum
+    filtered_spectrum1 = mask * magnitude_spectrum1
+    filtered_spectrum2 = mask * magnitude_spectrum2
+
+    # Calculate the sum of the high-frequency components
+    high_frequency_sum1 = np.sum(filtered_spectrum1)
+    high_frequency_sum2 = np.sum(filtered_spectrum2)
+
+    # Calculate the detail preservation score
+    detail_preservation_score = np.linalg.norm(filtered_spectrum1 - filtered_spectrum2)#high_frequency_sum1 / high_frequency_sum2
+
+    return detail_preservation_score

@@ -34,7 +34,7 @@
 32,4k_blanket_3.mp4,maxim_gopro,0.677811868420334
 33,4k_blanket_3.mp4,deeprft_gopro,0.438531985707839
 34,4k_blanket_3.mp4,nafnet_reds,1.00447779600714
-35,4k_blanket_3.mp4,real_blur,-0.1
+35,4k_blanket_3.mp4,real_blur,0.0
 36,4k_camry_3.mp4,deblurgan_inception,0.625562260057683
 37,4k_camry_3.mp4,deeprft_gopro,0.0
 38,4k_camry_3.mp4,vrt_gopro,2.82681412856124
@@ -106,7 +106,7 @@
 104,4k_falling_4.mp4,vrt_reds,2.70122100168698
 105,4k_falling_4.mp4,mpr_local,0.73868332876212
 106,4k_falling_4.mp4,maxim_reds,1.08045906021886
-107,4k_falling_4.mp4,real_blur,-0.1
+107,4k_falling_4.mp4,real_blur,0.0
 108,4k_hlullaby_3.mp4,mpr_local,0.303144141943663
 109,4k_hlullaby_3.mp4,vrt_gopro,2.37546966014951
 110,4k_hlullaby_3.mp4,vrt_reds,2.30768642029051
@@ -142,7 +142,7 @@
 140,4k_lullaby_7.mp4,restormer_local,0.591209966266869
 141,4k_lullaby_7.mp4,mpr_local,0.482396089235475
 142,4k_lullaby_7.mp4,restormer,0.207210672183519
-143,4k_lullaby_7.mp4,real_blur,-0.1
+143,4k_lullaby_7.mp4,real_blur,0.0
 144,4k_martian_3.mp4,restormer,0.114818510253265
 145,4k_martian_3.mp4,maxim_reds,2.22613746783684
 146,4k_martian_3.mp4,nafnet_reds,3.8929828264584314
