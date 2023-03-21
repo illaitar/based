@@ -1,6 +1,6 @@
-# BASeD — Blur Aqisition Setup Deblurring
+# BASED: Benchmarking, Analysis, and Structural Estimation of Deblurring
 
-This repo contains subjective ranking results on BASeD and RSBlur datasets
+This repo contains subjective ranking results on BASED and RSBlur datasets
 along with a blur detection metric.
 
 ## Installation
