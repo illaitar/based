@@ -58,7 +58,7 @@ def ssim_calc(im1, im2):
     Y = ssim(Y1, Y2)
     U = ssim(U1, U2)
     V = ssim(V1, V2)
-    return Y * 6 + U + V
+    return [Y, U, V]
 
 
 def gabor(image):
@@ -552,6 +552,9 @@ def haar_calc(im1, im2):
     h_1 = haar(im1, 15)
     h_2 = haar(im2, 15)
 
+    h_3 = haar(im1, 25)
+    h_4 = haar(im2, 25)
+
     return np.linalg.norm(h_1 - h_2)
 
 
@@ -663,5 +666,5 @@ def fft2_calc(image1, image2, r = 15 ):
     # detail_preservation_score = np.sum(np.abs(A - B) / (np.abs(A) + np.abs(B)))
     # #bray-curtis
     # detail_preservation_score = np.sum(np.abs(A - B)) / np.sum(np.abs(A + B))
-    detail_preservation_score = np.linalg.norm(A - B)
+    # detail_preservation_score = np.linalg.norm(A - B)
     return detail_preservation_score

@@ -20,7 +20,12 @@ def prepare_row(record):
     }
 
     for component in components:
-        record[component.__name__] = component(img1, img2)
+        result = component(img1, img2)
+        if type(result) is list:
+            for i, elem in enumerate(result):
+                record[component.__name__ + str(i)] = elem
+        else:
+            record[component.__name__] = result
 
     return record
 

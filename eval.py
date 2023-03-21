@@ -43,6 +43,11 @@ if __name__ == "__main__":
         print("Dataset:", dataset)
         print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
 
+        names = list(pd.read_csv(dataset).columns)
+        names.remove("video")
+        names.remove("value")
+        names.remove("method")
+
         for name in names:
             stats = evaluate(
                 dataset=dataset,

@@ -64,6 +64,12 @@ if __name__ == "__main__":
 
     print("Dataset: dataset_based.csv")
     print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
+
+    names = list(pd.read_csv("dataset_based.csv").columns)
+    names.remove("video")
+    names.remove("value")
+    names.remove("method")
+
     for method, stats in [
         ("based[cv]", cross_validate("dataset_based.csv", model, names)),
         ("based[cd]", cross_dataset("dataset_rsblur.csv", "dataset_based.csv", model, names)),
@@ -72,6 +78,7 @@ if __name__ == "__main__":
 
     print("Dataset: dataset_rsblur.csv")
     print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
+
     for method, stats in [
         ("based[cv]", cross_validate("dataset_rsblur.csv", model, names)),
         ("based[cd]", cross_dataset("dataset_based.csv", "dataset_rsblur.csv", model, names)),
