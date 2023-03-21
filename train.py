@@ -1,14 +1,11 @@
 from collections import defaultdict
 
 import numpy as np
-from numpy.random.mtrand import RandomState
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 from scipy.stats import pearsonr, spearmanr, kendalltau
-from sklearn.svm import SVR
-from sklearn.linear_model import LinearRegression
 
 from data import names
 
@@ -48,7 +45,7 @@ if __name__ == "__main__":
         stats = cross_validate(
             dataset=dataset,
             model=Pipeline([
-                ("regressor",RandomForestRegressor(n_estimators=400, max_features='sqrt', random_state=8))
+                ("regressor", RandomForestRegressor(n_estimators=400, max_features="sqrt", random_state=8))
             ]),
             names=names
         )
