@@ -34,20 +34,46 @@ def cross_validate(dataset, model, names):
     }
 
 
+def cross_dataset(train_dataset, test_dataset, model, names):
+    train_data = pd.read_csv(train_dataset)
+    test_data = pd.read_csv(test_dataset)
+
+    stats = defaultdict(list)
+
+    model.fit(train_data.loc[:, names], train_data.value)
+
+    for video in test_data.video.unique():
+        data_test = test_data[test_data.video == video]
+        y_pred = model.predict(data_test.loc[:, names])
+
+        stats["PLCC"].append(pearsonr(y_pred, data_test.value).statistic)
+        stats["SRCC"].append(spearmanr(y_pred, data_test.value).statistic)
+        stats["KRCC"].append(kendalltau(y_pred, data_test.value).statistic)
+        stats["RMSE"].append(np.sqrt(np.mean(np.square(y_pred - data_test.value))))
+
+    return {
+        name: np.mean(stat)
+        for name, stat in stats.items()
+    }
+
+
 if __name__ == "__main__":
-    for dataset in [
-        "dataset_based.csv",
-        "dataset_rsblur.csv"
+    model = Pipeline([
+        ("regressor", RandomForestRegressor(n_estimators=400, max_features="sqrt", random_state=8))
+    ])
+
+    print("Dataset: dataset_based.csv")
+    print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
+    for method, stats in [
+        ("based[cv]", cross_validate("dataset_based.csv", model, names)),
+        ("based[cd]", cross_dataset("dataset_rsblur.csv", "dataset_based.csv", model, names)),
     ]:
-        print("Dataset:", dataset)
-        print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
+        print(f"{method}\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")
 
-        stats = cross_validate(
-            dataset=dataset,
-            model=Pipeline([
-                ("regressor", RandomForestRegressor(n_estimators=400, max_features="sqrt", random_state=8))
-            ]),
-            names=names
-        )
-
-        print(f"based\t\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")
+    print("Dataset: dataset_rsblur.csv")
+    print("Method\t\t |  PLCC  |  SRCC  |  KRCC  |  RMSE")
+    for method, stats in [
+        ("based[cv]", cross_validate("dataset_rsblur.csv", model, names)),
+        ("based[cd]", cross_dataset("dataset_based.csv", "dataset_rsblur.csv", model, names)),
+    ]:
+        print(f"{method}\t | {stats['PLCC']:.4f} | {stats['SRCC']:.4f} | {stats['KRCC']:.4f} | {stats['RMSE']:15.4f}")
