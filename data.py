@@ -26,35 +26,38 @@ def prepare_row(record):
 
 
 components = [
-    # laplac_calc,
-    # fft_calc,
+    laplac_calc,
+    fft_calc,
     # optical_calc,
     # reblur_calc,
-    # haff_calc,
-    # sobel_calc,
-    # hog_calc,
-    # lbp_calc,
-    # gabor_calc,
-    # ssim_calc,
+    haff_calc,
+    sobel_calc,
+    hog_calc,
+    lbp_calc,
+    gabor_calc,
+    ssim_calc,
     # regression,
-    # haar_calc,
-    # lpips_calc,
-    # color_calc,
-    # tenengrad_calc,
-    # lapm_calc,
-    # laple_calc,
-    # log_calc,
-    # sharr_calc,
-    # clache_calc,
-    # hist_cmp,
-    # saliency_calc,
-    # fft2_calc,
+    haar_calc,
+    lpips_calc,
+    color_calc,
+    tenengrad_calc,
+    lapm_calc,
+    laple_calc,
+    log_calc,
+    sharr_calc,
+    # # clache_calc,
+    hist_cmp,
+    saliency_calc,
+    fft2_calc,
     # ssim_blurriness_metric,
     # vif_blurriness_metric,
     # vollath_blurriness_metric
     # wavelet_blurriness_metric,
     # fft3
-    deblur_compare
+    # deblur_compare,
+    # HoughKLD,
+    # HoughJSD,
+    # HoughH2
 ]
 
 names = [
@@ -65,12 +68,12 @@ names = [
 
 if __name__ == "__main__":
     for dataset in [
-                "based",
-             "rsblur",
+        "based",
+        "rsblur",
     ]:
         subj = pd.read_csv(f"subj_{dataset}.csv", index_col=0)
 
-        with Pool(1) as pool:
+        with Pool(8) as pool:
             records = list(tqdm(pool.imap(prepare_row, subj.itertuples()), total=len(subj)))
 
         pd.DataFrame(records).to_csv(f"dataset_{dataset}.csv", index=False)

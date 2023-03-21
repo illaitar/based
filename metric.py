@@ -32,7 +32,11 @@ __all__ = [
     "clache_calc",
     "hist_cmp",
     "saliency_calc",
-    "fft2_calc"
+    "fft2_calc",
+    "fft_calc_m",
+    "HoughKLD",
+    "HoughJSD",
+    "HoughH2"
 ]
 
 
@@ -57,9 +61,9 @@ def ssim_calc(im1, im2):
     Y1, U1, V1 = [im1[...,i] for i in range(3)]
     Y2, U2, V2 = [im2[...,i] for i in range(3)]
     Y = ssim(Y1, Y2)
-    U = ssim(U1, U2)
-    V = ssim(V1, V2)
-    return Y * 6 + U + V
+    # U = ssim(U1, U2)
+    # V = ssim(V1, V2)
+    return Y #* 6 + U + V
 
 
 def gabor(image):
@@ -266,6 +270,14 @@ def fft_calc(im1, im2):
         sum_ += np.linalg.norm(fft_1 - fft_2)
 
     return sum_
+
+def fft_calc_m(im1, freq = 10):
+
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+
+    fft_1 = fft(im1, freq)
+
+    return np.var(fft_1)
 
 
 def fft_lfq(image, size=35):
@@ -625,7 +637,7 @@ def saliency(im):
     # (success, saliencyMap) = saliency.computeSaliency(im)
     # saliencyMap = (saliencyMap * 255).astype("uint8")
 
-    saliency = cv2.saliency.StaticSaliencyFineGrained_create()
+    saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
     (success, saliencyMap) = saliency.computeSaliency(im)
 
     return saliencyMap
@@ -683,3 +695,94 @@ def fft2_calc(image1, image2):
     detail_preservation_score = np.linalg.norm(filtered_spectrum1 - filtered_spectrum2)#high_frequency_sum1 / high_frequency_sum2
 
     return detail_preservation_score
+
+
+import cv2
+import torch
+import PIL
+import math
+import numpy as np
+import skimage
+from skimage.transform import hough_line
+import matplotlib.pyplot as plt
+import sys
+
+def HoughKLD(orig_gray, compr_gray):
+    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
+    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
+    def sobel_grad(gray):
+        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
+        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
+        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
+        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
+        return grad_sobel
+
+    def hough_diag(edges):
+        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
+        h = hough_line(edges, theta=tested_angles)[0]
+        return h
+
+    def KLD(trg, inp):
+        inp = inp / torch.sum(inp)
+        trg = trg / torch.sum(trg)
+        eps = sys.float_info.epsilon
+        return torch.sum(trg*torch.log(eps+torch.div(trg,(inp+eps))))
+
+    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
+    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
+    return KLD(orig_diag, compr_diag).item()
+
+
+def HoughJSD(orig_gray, compr_gray):
+    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
+    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
+    def sobel_grad(gray):
+        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
+        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
+        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
+        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
+        return grad_sobel
+
+    def hough_diag(edges):
+        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
+        h = hough_line(edges, theta=tested_angles)[0]
+        return h
+
+    def KLD(trg, inp):
+        inp = inp / torch.sum(inp)
+        trg = trg / torch.sum(trg)
+        eps = sys.float_info.epsilon
+        return torch.sum(trg*torch.log(eps+torch.div(trg,(inp+eps))))
+
+    def JSD(trg, inp):
+        tmp = (trg + inp) / 2
+        return (KLD(trg, tmp) + KLD(inp, tmp)) / 2
+
+    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
+    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
+    return JSD(orig_diag, compr_diag).item()
+
+
+def HoughH2(orig_gray, compr_gray):
+    orig_gray = cv2.cvtColor(orig_gray, cv2.COLOR_BGR2GRAY)
+    compr_gray = cv2.cvtColor(compr_gray, cv2.COLOR_BGR2GRAY)
+    def sobel_grad(gray):
+        X2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 1, dy = 0, ksize = -1)
+        Y2 = cv2.Sobel(gray, ddepth = cv2.CV_64F, dx = 0, dy = 1, ksize = -1)
+        grad_sobel=np.sqrt(X2*X2+Y2*Y2)
+        cv2.normalize(grad_sobel, grad_sobel, 0, 255, cv2.NORM_MINMAX)
+        return grad_sobel
+
+    def hough_diag(edges):
+        tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 360, endpoint=False)
+        h = hough_line(edges, theta=tested_angles)[0]
+        return h
+
+    def H2(trg, inp):
+        inp = inp / torch.sum(inp)
+        trg = trg / torch.sum(trg)
+        return 2 * torch.sum(((trg) ** 0.5 - (inp)  ** 0.5) ** 2)
+
+    orig_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(orig_gray))))[None, ...]
+    compr_diag = torch.from_numpy(np.log(1 + hough_diag(sobel_grad(compr_gray))))[None, ...]
+    return H2(orig_diag, compr_diag).item()
