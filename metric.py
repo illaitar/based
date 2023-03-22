@@ -128,8 +128,8 @@ def hog_calc(im1, im2):
     * x4 Downsample increases quality (+0.04)
     """
 
-    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
-    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128), interpolation = cv2.INTER_NEAREST)
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128), interpolation = cv2.INTER_NEAREST)
 
     # im1 = cv2.equalizeHist(im1)
     # im2 = cv2.equalizeHist(im2)
