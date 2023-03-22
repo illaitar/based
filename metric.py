@@ -199,19 +199,19 @@ def sobel_sd(img):
 
 
 def reblur(img):
-    kernels = [17]
+    kernels = [13]
     reblurs = []
 
     for kernel in kernels:
-        reblurs.append(cv2.GaussianBlur(img, (kernel, kernel), 0))
+        reblurs.append(cv2.GaussianBlur(img, (kernel, kernel), 5))
 
-    edges_base = haff(img)
+    edges_base = tenengrad(img)
 
     edges = []
     for reblur in reblurs:
-        edges.append(haff(reblur))
+        edges.append(tenengrad(reblur))
 
-    sum_ = 1
+    sum_ = 0
     for edge in edges:
         sum_ += np.linalg.norm(edges_base - edge)
 
@@ -222,6 +222,10 @@ def reblur_calc(im1, im2):
     """
     Calculates reblur image to blur image
     """
+
+
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
 
     reblur_1 = reblur(im1)
     reblur_2 = reblur(im2)
