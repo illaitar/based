@@ -62,11 +62,15 @@ def ssim_calc(im1, im2):
 
 
 def gabor(image):
-    real, _ = skimage.filters.gabor(
-        image, frequency=0.15, theta=np.pi / 3, sigma_x=3, sigma_y=3, mode="wrap"
-    )
-
-    return np.array(cv2.meanStdDev(real))
+    rcs = []
+    for frequency in (0.10, 0.15, 0.2):
+        sigma = 3.5
+        for theta in (0, np.pi / 3):
+            real, _ = skimage.filters.gabor(
+                image, frequency=frequency, theta=np.pi / 3, sigma_x=sigma, sigma_y=sigma, mode="wrap"
+            )
+            rcs.append(np.array(cv2.meanStdDev(real)))
+    return rcs
 
 
 def gabor_calc(im1, im2):
@@ -78,7 +82,10 @@ def gabor_calc(im1, im2):
     gabor_1 = gabor(cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128)))
     gabor_2 = gabor(cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128)))
 
-    return -np.linalg.norm(gabor_1 - gabor_2)
+    res = []
+    for elem1, elem2 in zip(gabor_1, gabor_2):
+        res.append(-np.linalg.norm(elem1 - elem2))
+    return res
 
 
 def sobel(image):
