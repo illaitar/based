@@ -224,8 +224,8 @@ def reblur_calc(im1, im2):
     """
 
 
-    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (128, 128))
-    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (128, 128))
+    im1 = cv2.resize(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), (256, 256))
+    im2 = cv2.resize(cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY), (256, 256))
 
     reblur_1 = reblur(im1)
     reblur_2 = reblur(im2)

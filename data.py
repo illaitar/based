@@ -48,9 +48,10 @@ components = [
     sharr_calc,
     hist_cmp,
     saliency_calc,
+    reblur_calc,
 
     # optical_calc,
-    reblur_calc,
+
     # fft2_calc,
     # lpips_calc,
     # regression,
